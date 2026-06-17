@@ -95,3 +95,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+async function cargarTurnos() {
+
+    const { data: userData } = await supabaseClient
+        .from("usuarios")
+        .select("id")
+        .eq("username", "admin")
+        .single();
+
+    const { data: turnos, error } = await supabaseClient
+        .from("turnos")
+        .select("*")
+        .eq("usuario_id", userData.id)
+        .order("fecha", { ascending: true });
+
+    const contenedor = document.getElementById("listaTurnos");
+    contenedor.innerHTML = "";
+
+    if (turnos.length === 0) {
+        contenedor.innerHTML = "<p>No hay turnos aún</p>";
+        return;
+    }
+
+    turnos.forEach(t => {
+        const div = document.createElement("div");
+        div.style.border = "1px solid #ccc";
+        div.style.margin = "5px";
+        div.style.padding = "10px";
+
+        div.innerHTML = `
+            <b>${t.fecha}</b> - ${t.hora} <br>
+            Cliente: ${t.cliente_nombre} <br>
+            Estado: ${t.estado}
+        `;
+
+        contenedor.appendChild(div);
+    });
+}
