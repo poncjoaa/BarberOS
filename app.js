@@ -32,13 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("login").style.display = "none";
             document.getElementById("inicio").style.display = "block";
 
-cargarTurnos();
+            cargarTurnos();
 
         } else {
-
             alert("Usuario o contraseña incorrectos");
-            console.log(error);
-
         }
 
     });
@@ -70,33 +67,40 @@ cargarTurnos();
         }
 
         const { error } = await supabaseClient
-    .from("turnos")
-    .insert([{
-        usuario_id: userData.id,
-        fecha: fecha,
-        hora: hora,
-        cliente_nombre: cliente,
-        servicio_id: 1,
-        precio: 5000,
-        estado: "reservado"
-    }]);
+            .from("turnos")
+            .insert([{
+                usuario_id: userData.id,
+                fecha: fecha,
+                hora: hora,
+                cliente_nombre: cliente,
+                servicio_id: 1,
+                precio: 5000,
+                estado: "reservado"
+            }]);
 
         if (error) {
 
             alert("Error al guardar turno");
-            alert(JSON.stringify(error, null, 2));
             console.log(error);
 
         } else {
 
             alert("Turno guardado");
+
             document.getElementById("formTurno").style.display = "none";
+
+            cargarTurnos();
 
         }
 
     });
 
 });
+
+// =========================
+// CARGAR TURNOS (AGENDA)
+// =========================
+
 async function cargarTurnos() {
 
     const { data: userData } = await supabaseClient
@@ -114,12 +118,13 @@ async function cargarTurnos() {
     const contenedor = document.getElementById("listaTurnos");
     contenedor.innerHTML = "";
 
-    if (turnos.length === 0) {
+    if (!turnos || turnos.length === 0) {
         contenedor.innerHTML = "<p>No hay turnos aún</p>";
         return;
     }
 
     turnos.forEach(t => {
+
         const div = document.createElement("div");
         div.style.border = "1px solid #ccc";
         div.style.margin = "5px";
@@ -133,4 +138,5 @@ async function cargarTurnos() {
 
         contenedor.appendChild(div);
     });
+
 }
