@@ -25,8 +25,7 @@ btnIngresar.addEventListener("click", async () => {
 
     if (data) {
 
-        alert("Bienvenido a BarberOS");
-
+        document.getElementById("inicio").style.display = "block";
     } else {
 
         alert("Usuario o contraseña incorrectos");
