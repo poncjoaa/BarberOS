@@ -70,14 +70,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const { error } = await supabaseClient
             .from("turnos")
             .insert([{
-                usuario_id: userData.id,
-                fecha: fecha,
-                hora: hora,
-                cliente_nombre: cliente,
-                servicio_id: 1,
-                precio: 0,
-                estado: "reservado"
-            }]);
+    usuario_id: userData.id,
+    fecha: fecha,
+    hora: hora,
+    cliente_nombre: cliente,
+    estado: "reservado"
+}]);
 
         if (error) {
 
