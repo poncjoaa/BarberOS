@@ -36,3 +36,10 @@ btnIngresar.addEventListener("click", async () => {
     }
 
 });
+const btnNuevoTurno = document.getElementById("btnNuevoTurno");
+
+btnNuevoTurno.addEventListener("click", () => {
+
+    document.getElementById("formTurno").style.display = "block";
+
+});
