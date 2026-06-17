@@ -25,12 +25,10 @@ btnIngresar.addEventListener("click", async () => {
 
     if (data) {
 
-    document.getElementById("login").style.display = "none";
+        document.getElementById("login").style.display = "none";
 
-    document.getElementById("inicio").style.display = "block";
-
-}
         document.getElementById("inicio").style.display = "block";
+
     } else {
 
         alert("Usuario o contraseña incorrectos");
