@@ -1,0 +1,2 @@
+# BarberOS
+PWA para barberías
