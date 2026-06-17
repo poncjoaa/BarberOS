@@ -72,11 +72,11 @@ btnGuardarTurno.addEventListener("click", async () => {
         ]);
 
     if (!error) {
-        alert("Turno guardado");
-        document.getElementById("formTurno").style.display = "none";
-    } else {
-        alert("Error al guardar turno");
-        console.log(error);
-    }
+    alert("Turno guardado");
+    document.getElementById("formTurno").style.display = "none";
+} else {
+    alert("Error al guardar turno");
 
-});
+    alert(JSON.stringify(error));
+    console.log(error);
+}
