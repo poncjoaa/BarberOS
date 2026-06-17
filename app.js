@@ -43,3 +43,40 @@ btnNuevoTurno.addEventListener("click", () => {
     document.getElementById("formTurno").style.display = "block";
 
 });
+const btnGuardarTurno = document.getElementById("btnGuardarTurno");
+
+btnGuardarTurno.addEventListener("click", async () => {
+
+    const cliente = document.getElementById("cliente").value;
+    const fecha = document.getElementById("fecha").value;
+    const hora = document.getElementById("hora").value;
+
+    const { data: user } = await supabaseClient
+        .from("usuarios")
+        .select("id")
+        .eq("username", "admin")
+        .single();
+
+    const { data, error } = await supabaseClient
+        .from("turnos")
+        .insert([
+            {
+                usuario_id: user.id,
+                fecha: fecha,
+                hora: hora,
+                cliente_nombre: cliente,
+                servicio_id: 1,
+                precio: 0,
+                estado: "reservado"
+            }
+        ]);
+
+    if (!error) {
+        alert("Turno guardado");
+        document.getElementById("formTurno").style.display = "none";
+    } else {
+        alert("Error al guardar turno");
+        console.log(error);
+    }
+
+});
