@@ -1,2 +1,2 @@
-index.html# BarberOS
+# BarberOS
 PWA para barberías
