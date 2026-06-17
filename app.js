@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             document.getElementById("login").style.display = "none";
             document.getElementById("inicio").style.display = "block";
+cargarTurnos();
 
         } else {
 
