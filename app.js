@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
 
             alert("Usuario o contraseña incorrectos");
+            console.log(error);
 
         }
 
@@ -54,16 +55,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const fecha = document.getElementById("fecha").value;
         const hora = document.getElementById("hora").value;
 
-        const { data: user } = await supabaseClient
+        const { data: userData, error: userError } = await supabaseClient
             .from("usuarios")
             .select("id")
             .eq("username", "admin")
             .single();
 
+        if (userError) {
+            alert("Error obteniendo usuario");
+            console.log(userError);
+            return;
+        }
+
         const { error } = await supabaseClient
             .from("turnos")
             .insert([{
-                usuario_id: user.id,
+                usuario_id: userData.id,
                 fecha: fecha,
                 hora: hora,
                 cliente_nombre: cliente,
@@ -72,15 +79,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 estado: "reservado"
             }]);
 
-        if (!error) {
+        if (error) {
 
-            alert("Turno guardado");
-            document.getElementById("formTurno").style.display = "none";
+            alert("Error al guardar turno");
+            alert(JSON.stringify(error, null, 2));
+            console.log(error);
 
         } else {
 
-            alert("Error al guardar turno");
-            console.log(error);
+            alert("Turno guardado");
+            document.getElementById("formTurno").style.display = "none";
 
         }
 
