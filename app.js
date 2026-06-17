@@ -8,59 +8,61 @@ const supabaseClient = supabase.createClient(
     supabaseKey
 );
 
-const btnIngresar = document.getElementById("btnIngresar");
+document.addEventListener("DOMContentLoaded", () => {
 
-btnIngresar.addEventListener("click", async () => {
+    const btnIngresar = document.getElementById("btnIngresar");
+    const btnNuevoTurno = document.getElementById("btnNuevoTurno");
+    const btnGuardarTurno = document.getElementById("btnGuardarTurno");
 
-    const username = document.getElementById("username").value;
+    // LOGIN
+    btnIngresar.addEventListener("click", async () => {
 
-    const password = document.getElementById("password").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
 
-    const { data, error } = await supabaseClient
-        .from("usuarios")
-        .select("*")
-        .eq("username", username)
-        .eq("password_hash", password)
-        .single();
+        const { data, error } = await supabaseClient
+            .from("usuarios")
+            .select("*")
+            .eq("username", username)
+            .eq("password_hash", password)
+            .single();
 
-    if (data) {
+        if (data) {
 
-        document.getElementById("login").style.display = "none";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("inicio").style.display = "block";
 
-        document.getElementById("inicio").style.display = "block";
+        } else {
 
-    } else {
+            alert("Usuario o contraseña incorrectos");
 
-        alert("Usuario o contraseña incorrectos");
+        }
 
-    }
+    });
 
-});
-const btnNuevoTurno = document.getElementById("btnNuevoTurno");
+    // MOSTRAR FORMULARIO TURNO
+    btnNuevoTurno.addEventListener("click", () => {
 
-btnNuevoTurno.addEventListener("click", () => {
+        document.getElementById("formTurno").style.display = "block";
 
-    document.getElementById("formTurno").style.display = "block";
+    });
 
-});
-const btnGuardarTurno = document.getElementById("btnGuardarTurno");
+    // GUARDAR TURNO
+    btnGuardarTurno.addEventListener("click", async () => {
 
-btnGuardarTurno.addEventListener("click", async () => {
+        const cliente = document.getElementById("cliente").value;
+        const fecha = document.getElementById("fecha").value;
+        const hora = document.getElementById("hora").value;
 
-    const cliente = document.getElementById("cliente").value;
-    const fecha = document.getElementById("fecha").value;
-    const hora = document.getElementById("hora").value;
+        const { data: user } = await supabaseClient
+            .from("usuarios")
+            .select("id")
+            .eq("username", "admin")
+            .single();
 
-    const { data: user } = await supabaseClient
-        .from("usuarios")
-        .select("id")
-        .eq("username", "admin")
-        .single();
-
-    const { data, error } = await supabaseClient
-        .from("turnos")
-        .insert([
-            {
+        const { error } = await supabaseClient
+            .from("turnos")
+            .insert([{
                 usuario_id: user.id,
                 fecha: fecha,
                 hora: hora,
@@ -68,15 +70,20 @@ btnGuardarTurno.addEventListener("click", async () => {
                 servicio_id: 1,
                 precio: 0,
                 estado: "reservado"
-            }
-        ]);
+            }]);
 
-    if (!error) {
-    alert("Turno guardado");
-    document.getElementById("formTurno").style.display = "none";
-} else {
-    alert("Error al guardar turno");
+        if (!error) {
 
-    alert(JSON.stringify(error));
-    console.log(error);
-}
+            alert("Turno guardado");
+            document.getElementById("formTurno").style.display = "none";
+
+        } else {
+
+            alert("Error al guardar turno");
+            console.log(error);
+
+        }
+
+    });
+
+});
