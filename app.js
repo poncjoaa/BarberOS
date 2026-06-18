@@ -16,95 +16,88 @@ document.addEventListener(
 "DOMContentLoaded",
 () => {
 
-    const btnIngresar =
-        document.getElementById(
-            "btnIngresar"
-        );
-
-    const btnInicio =
-        document.getElementById(
-            "btnInicio"
-        );
-
-    const btnAgenda =
-        document.getElementById(
-            "btnAgenda"
-        );
-
-    const btnHistorial =
-        document.getElementById(
-            "btnHistorial"
-        );
-
-    const btnConfiguracion =
-        document.getElementById(
-            "btnConfiguracion"
-        );
-
-    const btnNuevoTurno =
-        document.getElementById(
-            "btnNuevoTurno"
-        );
-
-    const btnGuardarTurno =
-        document.getElementById(
-            "btnGuardarTurno"
-        );
-
-    // LOGIN
-
-    btnIngresar.addEventListener(
-        "click",
-        login
+const btnIngresar =
+    document.getElementById(
+        "btnIngresar"
     );
 
-    // MENU
-
-    btnInicio.addEventListener(
-        "click",
-        mostrarInicio
+const btnInicio =
+    document.getElementById(
+        "btnInicio"
     );
 
-    btnAgenda.addEventListener(
-        "click",
-        mostrarAgenda
+const btnAgenda =
+    document.getElementById(
+        "btnAgenda"
     );
 
-    btnHistorial.addEventListener(
-        "click",
-        mostrarHistorial
+const btnHistorial =
+    document.getElementById(
+        "btnHistorial"
     );
 
-    btnConfiguracion.addEventListener(
-        "click",
-        mostrarConfiguracion
+const btnConfiguracion =
+    document.getElementById(
+        "btnConfiguracion"
     );
 
-    // TURNOS
-
-    btnNuevoTurno.addEventListener(
-        "click",
-        () => {
-
-            const form =
-                document.getElementById(
-                    "formTurno"
-                );
-
-            form.style.display =
-                form.style.display === "none"
-                ? "block"
-                : "none";
-        }
+const btnNuevoTurno =
+    document.getElementById(
+        "btnNuevoTurno"
     );
 
-    btnGuardarTurno.addEventListener(
-        "click",
-        guardarTurno
+const btnGuardarTurno =
+    document.getElementById(
+        "btnGuardarTurno"
     );
+
+btnIngresar.addEventListener(
+    "click",
+    login
+);
+
+btnInicio.addEventListener(
+    "click",
+    mostrarInicio
+);
+
+btnAgenda.addEventListener(
+    "click",
+    mostrarAgenda
+);
+
+btnHistorial.addEventListener(
+    "click",
+    mostrarHistorial
+);
+
+btnConfiguracion.addEventListener(
+    "click",
+    mostrarConfiguracion
+);
+
+btnNuevoTurno.addEventListener(
+    "click",
+    () => {
+
+        const form =
+            document.getElementById(
+                "formTurno"
+            );
+
+        form.style.display =
+            form.style.display === "none"
+            ? "block"
+            : "none";
+    }
+);
+
+btnGuardarTurno.addEventListener(
+    "click",
+    guardarTurno
+);
 
 }
-
 );
 
 async function login(){
@@ -174,50 +167,75 @@ document.getElementById(
 
 function mostrarInicio(){
 
-    ocultarSecciones();
+ocultarSecciones();
 
-    document.getElementById(
-        "inicio"
-    ).style.display = "block";
+document.getElementById(
+    "inicio"
+).style.display = "block";
 
-    activarBoton("btnInicio");
+activarBoton("btnInicio");
 
-    cargarInicio();
+cargarInicio();
+
 }
 
 function mostrarAgenda(){
 
-    ocultarSecciones();
+ocultarSecciones();
 
-    document.getElementById(
-        "agenda"
-    ).style.display = "block";
+document.getElementById(
+    "agenda"
+).style.display = "block";
 
-    activarBoton("btnAgenda");
+activarBoton("btnAgenda");
 
-    cargarTurnos();
+cargarTurnos();
+
 }
 
 function mostrarHistorial(){
 
-    ocultarSecciones();
+ocultarSecciones();
 
-    document.getElementById(
-        "historial"
-    ).style.display = "block";
+document.getElementById(
+    "historial"
+).style.display = "block";
 
-    activarBoton("btnHistorial");
+activarBoton("btnHistorial");
+
+const historial =
+document.getElementById(
+    "listaHistorial"
+);
+
+historial.innerHTML = `
+    <div class="empty-state">
+
+        <span class="material-symbols-outlined">
+            bar_chart
+        </span>
+
+        <h3>Sin historial</h3>
+
+        <p>
+            Aún no hay turnos completados
+        </p>
+
+    </div>
+`;
+
 }
 
 function mostrarConfiguracion(){
 
-    ocultarSecciones();
+ocultarSecciones();
 
-    document.getElementById(
-        "configuracion"
-    ).style.display = "block";
+document.getElementById(
+    "configuracion"
+).style.display = "block";
 
-    activarBoton("btnConfiguracion");
+activarBoton("btnConfiguracion");
+
 }
 
 async function guardarTurno(){
@@ -274,8 +292,6 @@ const { error } =
 
 if(error){
 
-    console.log(error);
-
     alert(
         "Error al guardar turno"
     );
@@ -324,8 +340,21 @@ if(
     turnos.length === 0
 ){
 
-    lista.innerHTML =
-        "<p>No hay turnos.</p>";
+    lista.innerHTML = `
+        <div class="empty-state">
+
+            <span class="material-symbols-outlined">
+                calendar_month
+            </span>
+
+            <h3>No hay turnos</h3>
+
+            <p>
+                Creá tu primer turno
+            </p>
+
+        </div>
+    `;
 
     return;
 }
@@ -342,14 +371,17 @@ turnos.forEach(
             "turno";
 
         div.innerHTML = `
-            <strong>${turno.fecha}</strong>
-            <br>
-            ${turno.hora}
-            <br>
-            ${turno.cliente_nombre}
-            <br>
-            Estado:
-            ${turno.estado}
+            <div class="turno-hora">
+                ${turno.hora}
+            </div>
+
+            <div class="turno-cliente">
+                ${turno.cliente_nombre}
+            </div>
+
+            <span class="estado">
+                ${turno.estado}
+            </span>
         `;
 
         lista.appendChild(
@@ -420,17 +452,101 @@ document.getElementById(
 ).textContent =
     ganancias;
 
+cargarProximosTurnos();
+
+}
+
+async function cargarProximosTurnos(){
+
+const hoy =
+    new Date()
+    .toISOString()
+    .split("T")[0];
+
+const { data:turnos } =
+    await supabaseClient
+    .from("turnos")
+    .select("*")
+    .eq(
+        "usuario_id",
+        usuarioActual.id
+    )
+    .gte(
+        "fecha",
+        hoy
+    )
+    .order(
+        "fecha",
+        { ascending:true }
+    )
+    .order(
+        "hora",
+        { ascending:true }
+    )
+    .limit(5);
+
+const contenedor =
+    document.getElementById(
+        "proximosTurnos"
+    );
+
+if(!contenedor) return;
+
+if(
+    !turnos ||
+    turnos.length === 0
+){
+
+    contenedor.innerHTML = `
+        <div class="empty-state">
+
+            <span class="material-symbols-outlined">
+                calendar_month
+            </span>
+
+            <h3>No hay turnos</h3>
+
+            <p>
+                Creá tu primer turno
+            </p>
+
+        </div>
+    `;
+
+    return;
+}
+
+contenedor.innerHTML = "";
+
+turnos.forEach(turno => {
+
+    contenedor.innerHTML += `
+        <div class="proximo-item">
+
+            <div class="proximo-hora">
+                ${turno.hora}
+            </div>
+
+            <div class="proximo-cliente">
+                ${turno.cliente_nombre}
+            </div>
+
+        </div>
+    `;
+});
+
 }
 
 function activarBoton(id){
 
-    document
-        .querySelectorAll(".menu button")
-        .forEach(btn =>
-            btn.classList.remove("active")
-        );
+document
+    .querySelectorAll(".menu button")
+    .forEach(btn =>
+        btn.classList.remove("active")
+    );
 
-    document
-        .getElementById(id)
-        .classList.add("active");
+document
+    .getElementById(id)
+    .classList.add("active");
+
 }
