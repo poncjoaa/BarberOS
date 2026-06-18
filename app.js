@@ -2,243 +2,340 @@ const supabaseUrl =
 "https://jyucjninnzwmycxtncjj.supabase.co";
 
 const supabaseKey =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dWNqbmlubnp3bXljeHRuY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTQ0NzMsImV4cCI6MjA5NzI5MDQ3M30.g8BiPO9wDPoWNk-nki0tRA4OLJn0fZuAqFskg3KEHBk";
+"TU_ANON_KEY";
 
 const supabaseClient =
 supabase.createClient(
-    supabaseUrl,
-    supabaseKey
+supabaseUrl,
+supabaseKey
 );
 
-document.addEventListener("DOMContentLoaded", () => {
+let usuarioActual = null;
+
+document.addEventListener(
+"DOMContentLoaded",
+() => {
 
     const btnIngresar =
-        document.getElementById("btnIngresar");
+        document.getElementById(
+            "btnIngresar"
+        );
 
-    const btnNuevoTurno =
-        document.getElementById("btnNuevoTurno");
-
-    const btnGuardarTurno =
-        document.getElementById("btnGuardarTurno");
+    const btnInicio =
+        document.getElementById(
+            "btnInicio"
+        );
 
     const btnAgenda =
-        document.getElementById("btnAgenda");
+        document.getElementById(
+            "btnAgenda"
+        );
 
     const btnHistorial =
-        document.getElementById("btnHistorial");
-
-    const btnServicios =
-        document.getElementById("btnServicios");
+        document.getElementById(
+            "btnHistorial"
+        );
 
     const btnConfiguracion =
-        document.getElementById("btnConfiguracion");
+        document.getElementById(
+            "btnConfiguracion"
+        );
+
+    const btnNuevoTurno =
+        document.getElementById(
+            "btnNuevoTurno"
+        );
+
+    const btnGuardarTurno =
+        document.getElementById(
+            "btnGuardarTurno"
+        );
 
     // LOGIN
 
-    btnIngresar.addEventListener("click", async () => {
+    btnIngresar.addEventListener(
+        "click",
+        login
+    );
 
-        const username =
-            document.getElementById("username").value;
+    // MENU
 
-        const password =
-            document.getElementById("password").value;
+    btnInicio.addEventListener(
+        "click",
+        mostrarInicio
+    );
 
-        const { data } =
-            await supabaseClient
-            .from("usuarios")
-            .select("*")
-            .eq("username", username)
-            .eq("password_hash", password)
-            .single();
+    btnAgenda.addEventListener(
+        "click",
+        mostrarAgenda
+    );
 
-        if (!data) {
+    btnHistorial.addEventListener(
+        "click",
+        mostrarHistorial
+    );
 
-            alert(
-                "Usuario o contraseña incorrectos"
-            );
+    btnConfiguracion.addEventListener(
+        "click",
+        mostrarConfiguracion
+    );
 
-            return;
+    // TURNOS
+
+    btnNuevoTurno.addEventListener(
+        "click",
+        () => {
+
+            const form =
+                document.getElementById(
+                    "formTurno"
+                );
+
+            form.style.display =
+                form.style.display === "none"
+                ? "block"
+                : "none";
         }
+    );
 
-        document.getElementById("login").style.display =
-            "none";
+    btnGuardarTurno.addEventListener(
+        "click",
+        guardarTurno
+    );
 
-        document.getElementById("inicio").style.display =
-            "block";
+}
 
-    });
+);
 
-    // NUEVO TURNO
+async function login(){
 
-    btnNuevoTurno.addEventListener("click", () => {
+const username =
+    document.getElementById(
+        "username"
+    ).value;
 
-        ocultarSecciones();
+const password =
+    document.getElementById(
+        "password"
+    ).value;
 
-        document.getElementById(
-            "formTurno"
-        ).style.display = "block";
+const { data } =
+    await supabaseClient
+    .from("usuarios")
+    .select("*")
+    .eq("username", username)
+    .eq("password_hash", password)
+    .single();
 
-    });
+if(!data){
 
-    // AGENDA
+    alert(
+        "Usuario o contraseña incorrectos"
+    );
 
-    btnAgenda.addEventListener("click", () => {
+    return;
+}
 
-        ocultarSecciones();
+usuarioActual = data;
 
-        document.getElementById(
-            "agenda"
-        ).style.display = "block";
+document.getElementById(
+    "login"
+).style.display = "none";
 
-        cargarTurnos();
+document.getElementById(
+    "app"
+).style.display = "block";
 
-    });
+await cargarInicio();
 
-    // HISTORIAL
+mostrarInicio();
 
-    btnHistorial.addEventListener("click", () => {
-
-        ocultarSecciones();
-
-        document.getElementById(
-            "historial"
-        ).style.display = "block";
-
-    });
-
-    // SERVICIOS
-
-    btnServicios.addEventListener("click", () => {
-
-        ocultarSecciones();
-
-        document.getElementById(
-            "servicios"
-        ).style.display = "block";
-
-    });
-
-    // CONFIG
-
-    btnConfiguracion.addEventListener("click", () => {
-
-        ocultarSecciones();
-
-        document.getElementById(
-            "configuracion"
-        ).style.display = "block";
-
-    });
-
-    // GUARDAR TURNO
-
-    btnGuardarTurno.addEventListener("click", async () => {
-
-        const cliente =
-            document.getElementById("cliente").value;
-
-        const fecha =
-            document.getElementById("fecha").value;
-
-        const hora =
-            document.getElementById("hora").value;
-
-        const { data:userData } =
-            await supabaseClient
-            .from("usuarios")
-            .select("id")
-            .eq("username","admin")
-            .single();
-
-        const { error } =
-            await supabaseClient
-            .from("turnos")
-            .insert([{
-                usuario_id:userData.id,
-                fecha,
-                hora,
-                cliente_nombre:cliente,
-                servicio_id:1,
-                precio:5000,
-                estado:"reservado"
-            }]);
-
-        if(error){
-
-            console.log(error);
-
-            alert(
-                "Error al guardar turno"
-            );
-
-            return;
-        }
-
-        alert(
-            "Turno guardado"
-        );
-
-        cargarTurnos();
-
-    });
-
-});
+}
 
 function ocultarSecciones(){
 
-    document.getElementById("formTurno")
-        .style.display = "none";
+document.getElementById(
+    "inicio"
+).style.display = "none";
 
-    document.getElementById("agenda")
-        .style.display = "none";
+document.getElementById(
+    "agenda"
+).style.display = "none";
 
-    document.getElementById("historial")
-        .style.display = "none";
+document.getElementById(
+    "historial"
+).style.display = "none";
 
-    document.getElementById("servicios")
-        .style.display = "none";
+document.getElementById(
+    "configuracion"
+).style.display = "none";
 
-    document.getElementById("configuracion")
-        .style.display = "none";
+}
+
+function mostrarInicio(){
+
+ocultarSecciones();
+
+document.getElementById(
+    "inicio"
+).style.display = "block";
+
+cargarInicio();
+
+}
+
+function mostrarAgenda(){
+
+ocultarSecciones();
+
+document.getElementById(
+    "agenda"
+).style.display = "block";
+
+cargarTurnos();
+
+}
+
+function mostrarHistorial(){
+
+ocultarSecciones();
+
+document.getElementById(
+    "historial"
+).style.display = "block";
+
+}
+
+function mostrarConfiguracion(){
+
+ocultarSecciones();
+
+document.getElementById(
+    "configuracion"
+).style.display = "block";
+
+}
+
+async function guardarTurno(){
+
+const cliente =
+    document.getElementById(
+        "cliente"
+    ).value;
+
+const fecha =
+    document.getElementById(
+        "fecha"
+    ).value;
+
+const hora =
+    document.getElementById(
+        "hora"
+    ).value;
+
+if(
+    !cliente ||
+    !fecha ||
+    !hora
+){
+    alert(
+        "Completa todos los campos"
+    );
+    return;
+}
+
+const { error } =
+    await supabaseClient
+    .from("turnos")
+    .insert([
+        {
+            usuario_id:
+                usuarioActual.id,
+
+            fecha,
+
+            hora,
+
+            cliente_nombre:
+                cliente,
+
+            servicio_id:1,
+
+            precio:5000,
+
+            estado:
+                "reservado"
+        }
+    ]);
+
+if(error){
+
+    console.log(error);
+
+    alert(
+        "Error al guardar turno"
+    );
+
+    return;
+}
+
+alert(
+    "Turno guardado"
+);
+
+document.getElementById(
+    "cliente"
+).value = "";
+
+cargarTurnos();
+
+cargarInicio();
+
 }
 
 async function cargarTurnos(){
 
-    const { data:userData } =
-        await supabaseClient
-        .from("usuarios")
-        .select("id")
-        .eq("username","admin")
-        .single();
+const { data:turnos } =
+    await supabaseClient
+    .from("turnos")
+    .select("*")
+    .eq(
+        "usuario_id",
+        usuarioActual.id
+    )
+    .order(
+        "fecha",
+        { ascending:true }
+    );
 
-    const { data:turnos } =
-        await supabaseClient
-        .from("turnos")
-        .select("*")
-        .eq("usuario_id", userData.id)
-        .order("fecha");
+const lista =
+    document.getElementById(
+        "listaTurnos"
+    );
 
-    const lista =
-        document.getElementById(
-            "listaTurnos"
-        );
+lista.innerHTML = "";
 
-    lista.innerHTML = "";
+if(
+    !turnos ||
+    turnos.length === 0
+){
 
-    if(!turnos || turnos.length === 0){
+    lista.innerHTML =
+        "<p>No hay turnos.</p>";
 
-        lista.innerHTML =
-            "<p>No hay turnos</p>";
+    return;
+}
 
-        return;
-    }
-
-    turnos.forEach(turno => {
+turnos.forEach(
+    turno => {
 
         const div =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
-        div.className = "turno";
+        div.className =
+            "turno";
 
         div.innerHTML = `
             <strong>${turno.fecha}</strong>
@@ -247,11 +344,76 @@ async function cargarTurnos(){
             <br>
             ${turno.cliente_nombre}
             <br>
+            Estado:
             ${turno.estado}
         `;
 
-        lista.appendChild(div);
+        lista.appendChild(
+            div
+        );
+    }
+);
 
-    });
+}
+
+async function cargarInicio(){
+
+const hoy =
+    new Date()
+    .toISOString()
+    .split("T")[0];
+
+const { data:turnos } =
+    await supabaseClient
+    .from("turnos")
+    .select("*")
+    .eq(
+        "usuario_id",
+        usuarioActual.id
+    )
+    .eq(
+        "fecha",
+        hoy
+    );
+
+let ocupados = 0;
+let ganancias = 0;
+
+if(turnos){
+
+    ocupados =
+        turnos.length;
+
+    turnos.forEach(
+        turno => {
+
+            ganancias +=
+                Number(
+                    turno.precio || 0
+                );
+        }
+    );
+}
+
+const libres =
+    Math.max(
+        0,
+        20 - ocupados
+    );
+
+document.getElementById(
+    "ocupadosHoy"
+).textContent =
+    ocupados;
+
+document.getElementById(
+    "libresHoy"
+).textContent =
+    libres;
+
+document.getElementById(
+    "gananciasHoy"
+).textContent =
+    ganancias;
 
 }
