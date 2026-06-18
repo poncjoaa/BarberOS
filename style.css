@@ -55,7 +55,7 @@ width:100%;
 
 padding:14px;
 
-border:1px solid rgba(212,175,55,.25);
+border:1px solid rgba(37,99,235,.25);
 
 border-radius:14px;
 
@@ -126,7 +126,7 @@ font-size:42px;
 
 font-weight:800;
 
-color:var(--gold);
+color:var(--primary);
 
 margin-top:10px;
 
@@ -272,13 +272,13 @@ border-radius:0;
 
 background:var(--primary);
 
-color:black;
+color:white;
 
 }
 
 .menu button.active .material-symbols-outlined{
 
-color:black;
+color:white;
 
 }
 
@@ -308,7 +308,7 @@ font-weight:600;
 
 padding:12px 0;
 
-border-bottom:1px solid rgba(212,175,55,.20);
+border-bottom:1px solid rgba(37,99,235,.15);
 
 }
 
@@ -498,21 +498,49 @@ margin-bottom:18px;
 
 /* CANCELADO */
 
+.estado-reservado{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.estado-completado{
+    background:#d4f8dd;
+    color:#198754;
+}
+
 .estado-cancelado{
     background:#ffd8d8;
     color:#dc3545;
 }
 
 .turno-reservado{
-    border-left:5px solid #d4af37;
+    border-left:5px solid #2563eb;
 }
 
-.turno-completado{
-    border-left:5px solid #198754;
-    background:#f1fff5;
+.card,
+.turno,
+#formTurno,
+#listaHistorial{
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.25);
+
 }
 
-.turno-cancelado{
-    border-left:5px solid #dc3545;
-    background:#fff5f5;
+.card{
+
+border-left:5px solid var(--primary);
+
+}
+
+.menu{
+
+border:1px solid rgba(37,99,235,.15);
+
+}
+
+body{
+
+background:#0a0a0a;
+
 }
