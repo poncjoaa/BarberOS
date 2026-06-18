@@ -14,18 +14,17 @@ box-sizing:border-box;
 
 body{
 
-font-family:Arial, sans-serif;
+    font-family:Arial, sans-serif;
 
-background:var(--light);
+    background:var(--dark);
 
-color:var(--dark);
+    color:var(--light);
 
-max-width:500px;
+    max-width:500px;
 
-margin:auto;
+    margin:auto;
 
-padding:20px 15px 100px;
-
+    padding:20px 15px 100px;
 }
 
 h1{
@@ -38,7 +37,7 @@ font-size:28px;
 
 font-weight:800;
 
-color:var(--dark);
+color:var(--gold);
 
 }
 
@@ -84,7 +83,7 @@ transition:.2s;
 
 background:var(--gold);
 
-color:black;
+color:var(--light);
 
 }
 
@@ -117,7 +116,7 @@ font-size:15px;
 
 margin-bottom:8px;
 
-color:var(--dark);
+color:#666;
 
 }
 
