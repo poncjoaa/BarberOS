@@ -467,6 +467,21 @@ margin-bottom:18px;
     margin-top:10px;
 }
 
+.estado.reservado{
+    background:#fff4cc;
+    color:#c9a227;
+}
+
+.estado.completado{
+    background:#d4edda;
+    color:#198754;
+}
+
+.estado.cancelado{
+    background:#f8d7da;
+    color:#dc3545;
+}
+
 /* RESERVADO */
 
 .estado-reservado{
