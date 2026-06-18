@@ -458,3 +458,32 @@ margin-bottom:18px;
 
     color:black;
 }
+
+.estado{
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:999px;
+    font-weight:700;
+    margin-top:10px;
+}
+
+/* RESERVADO */
+
+.estado-reservado{
+    background:#fff4cc;
+    color:#c8a629;
+}
+
+/* COMPLETADO */
+
+.estado-completado{
+    background:#d4f8dd;
+    color:#198754;
+}
+
+/* CANCELADO */
+
+.estado-cancelado{
+    background:#ffd8d8;
+    color:#dc3545;
+}
