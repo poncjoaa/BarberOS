@@ -363,8 +363,7 @@ turnos.forEach(
                 "div"
             );
 
-        div.className =
-            "turno";
+        div.className = `turno turno-${turno.estado}`;
 
         div.innerHTML = `
     <div class="turno-hora">
