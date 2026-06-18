@@ -522,10 +522,6 @@ if(
 
             <h3>No hay turnos</h3>
 
-            <p>
-                Creá tu primer turno
-            </p>
-
         </div>
     `;
 
@@ -554,6 +550,17 @@ turnos.forEach(turno => {
 }
 
 function activarBoton(id){
+
+    document
+        .querySelectorAll(".menu button")
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+}
 
 async function completarTurno(id){
 
@@ -614,16 +621,4 @@ async function editarTurno(id){
     .eq("id",id);
 
     cargarTurnos();
-}
-
-document
-    .querySelectorAll(".menu button")
-    .forEach(btn =>
-        btn.classList.remove("active")
-    );
-
-document
-    .getElementById(id)
-    .classList.add("active");
-
 }
