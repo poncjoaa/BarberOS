@@ -375,9 +375,9 @@ turnos.forEach(
         ${turno.cliente_nombre}
     </div>
 
-    <span class="estado">
-        ${turno.estado}
-    </span>
+    <span class="estado estado-${turno.estado}">
+    ${turno.estado}
+</span>
 
     <div class="acciones-turno">
 
