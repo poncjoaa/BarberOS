@@ -14,21 +14,17 @@ box-sizing:border-box;
 
 body{
 
-background:var(--light);
-color:var(--dark);
+    font-family:Arial, sans-serif;
 
-font-family:Arial, sans-serif;
+    background:var(--light);
 
-background:#f5f7fb;
+    color:var(--dark);
 
-max-width:500px;
+    max-width:500px;
 
-margin:auto;
+    margin:auto;
 
-padding:20px 15px 100px;
-
-color:#222;
-
+    padding:20px 15px 100px;
 }
 
 h1{
@@ -156,14 +152,16 @@ display:block;
 
     background:white;
 
-    border-radius:22px;
-
     padding:18px;
 
-    margin-bottom:15px;
+    border-radius:18px;
+
+    margin-bottom:12px;
+
+    border-left:4px solid var(--gold);
 
     box-shadow:
-        0 8px 24px rgba(0,0,0,.08);
+    0 5px 15px rgba(0,0,0,.08);
 
     line-height:1.8;
 }
@@ -287,5 +285,5 @@ box-shadow:
 
 .menu button.active .material-symbols-outlined{
 
-    color:white;
+    color:black;
 }
