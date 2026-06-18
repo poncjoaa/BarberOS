@@ -349,10 +349,6 @@ if(
 
             <h3>No hay turnos</h3>
 
-            <p>
-                Creá tu primer turno
-            </p>
-
         </div>
     `;
 
@@ -371,18 +367,38 @@ turnos.forEach(
             "turno";
 
         div.innerHTML = `
-            <div class="turno-hora">
-                ${turno.hora}
-            </div>
+    <div class="turno-hora">
+        ${turno.hora}
+    </div>
 
-            <div class="turno-cliente">
-                ${turno.cliente_nombre}
-            </div>
+    <div class="turno-cliente">
+        ${turno.cliente_nombre}
+    </div>
 
-            <span class="estado">
-                ${turno.estado}
-            </span>
-        `;
+    <span class="estado">
+        ${turno.estado}
+    </span>
+
+    <div class="acciones-turno">
+
+        <button onclick="editarTurno(${turno.id})">
+            Editar
+        </button>
+
+        <button onclick="completarTurno(${turno.id})">
+            Completar
+        </button>
+
+        <button onclick="cancelarTurno(${turno.id})">
+            Cancelar
+        </button>
+
+        <button onclick="eliminarTurno(${turno.id})">
+            Eliminar
+        </button>
+
+    </div>
+`;
 
         lista.appendChild(
             div
@@ -538,6 +554,67 @@ turnos.forEach(turno => {
 }
 
 function activarBoton(id){
+
+async function completarTurno(id){
+
+    await supabaseClient
+    .from("turnos")
+    .update({
+        estado:"completado"
+    })
+    .eq("id",id);
+
+    cargarTurnos();
+    cargarInicio();
+}
+
+async function cancelarTurno(id){
+
+    await supabaseClient
+    .from("turnos")
+    .update({
+        estado:"cancelado"
+    })
+    .eq("id",id);
+
+    cargarTurnos();
+}
+
+async function eliminarTurno(id){
+
+    if(!confirm("¿Eliminar turno?")){
+        return;
+    }
+
+    await supabaseClient
+    .from("turnos")
+    .delete()
+    .eq("id",id);
+
+    cargarTurnos();
+    cargarInicio();
+}
+
+async function editarTurno(id){
+
+    const nuevoNombre =
+        prompt(
+            "Nuevo nombre del cliente"
+        );
+
+    if(!nuevoNombre){
+        return;
+    }
+
+    await supabaseClient
+    .from("turnos")
+    .update({
+        cliente_nombre:nuevoNombre
+    })
+    .eq("id",id);
+
+    cargarTurnos();
+}
 
 document
     .querySelectorAll(".menu button")
