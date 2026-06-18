@@ -434,3 +434,27 @@ margin-bottom:18px;
 
     min-width:140px;
 }
+
+.acciones-turno{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    margin-top:15px;
+}
+
+.acciones-turno button{
+
+    padding:8px 12px;
+
+    font-size:13px;
+
+    border-radius:12px;
+
+    background:var(--gold);
+
+    color:black;
+}
