@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnIngresar = document.getElementById("btnIngresar");
     const btnNuevoTurno = document.getElementById("btnNuevoTurno");
     const btnGuardarTurno = document.getElementById("btnGuardarTurno");
+    const btnAgenda = document.getElementById("btnAgenda");
 
     // LOGIN
     btnIngresar.addEventListener("click", async () => {
@@ -20,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
 
-        const { data, error } = await supabaseClient
+        const { data } = await supabaseClient
             .from("usuarios")
             .select("*")
             .eq("username", username)
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    // MOSTRAR FORMULARIO TURNO
+    // NUEVO TURNO
     btnNuevoTurno.addEventListener("click", () => {
 
         document.getElementById("formTurno").style.display = "block";
@@ -54,17 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const fecha = document.getElementById("fecha").value;
         const hora = document.getElementById("hora").value;
 
-        const { data: userData, error: userError } = await supabaseClient
+        const { data: userData } = await supabaseClient
             .from("usuarios")
             .select("id")
             .eq("username", "admin")
             .single();
-
-        if (userError) {
-            alert("Error obteniendo usuario");
-            console.log(userError);
-            return;
-        }
 
         const { error } = await supabaseClient
             .from("turnos")
@@ -78,27 +73,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 estado: "reservado"
             }]);
 
-        if (error) {
-
-            alert("Error al guardar turno");
-            console.log(error);
-
-        } else {
+        if (!error) {
 
             alert("Turno guardado");
-
             document.getElementById("formTurno").style.display = "none";
 
             cargarTurnos();
 
+        } else {
+            alert("Error al guardar turno");
+            console.log(error);
         }
+
+    });
+
+    // BOTÓN AGENDA
+    btnAgenda.addEventListener("click", () => {
+
+        document.getElementById("agenda").style.display = "block";
+
+        cargarTurnos();
 
     });
 
 });
 
 // =========================
-// CARGAR TURNOS (AGENDA)
+// CARGAR TURNOS
 // =========================
 
 async function cargarTurnos() {
@@ -109,7 +110,7 @@ async function cargarTurnos() {
         .eq("username", "admin")
         .single();
 
-    const { data: turnos, error } = await supabaseClient
+    const { data: turnos } = await supabaseClient
         .from("turnos")
         .select("*")
         .eq("usuario_id", userData.id)
@@ -126,6 +127,7 @@ async function cargarTurnos() {
     turnos.forEach(t => {
 
         const div = document.createElement("div");
+
         div.style.border = "1px solid #ccc";
         div.style.margin = "5px";
         div.style.padding = "10px";
@@ -136,7 +138,7 @@ async function cargarTurnos() {
             Estado: ${t.estado}
         `;
 
-        contenedor.appendChild(div);
+        document.getElementById("listaTurnos").appendChild(div);
     });
 
 }
