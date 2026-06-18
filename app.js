@@ -152,19 +152,33 @@ function mostrarAgenda() {
     cargarTurnos();
 }
 
-function cargarHistorialSemanal()
-buscarFecha() {
+function mostrarHistorial() {
 
     ocultarSecciones();
-    document.getElementById("historial").style.display = "block";
 
-    activarBoton("btnHistorial");
+    document.getElementById(
+        "historial"
+    ).style.display = "block";
 
-    document.getElementById("listaHistorial").innerHTML = `
+    activarBoton(
+        "btnHistorial"
+    );
+
+    document.getElementById(
+        "listaHistorial"
+    ).innerHTML = `
         <div class="empty-state">
-            <span class="material-symbols-outlined">bar_chart</span>
-            <h3>Sin historial</h3>
-            <p>Aún no hay turnos completados</p>
+
+            <span class="material-symbols-outlined">
+                bar_chart
+            </span>
+
+            <h3>Historial</h3>
+
+            <p>
+                Próximamente disponible
+            </p>
+
         </div>
     `;
 }
