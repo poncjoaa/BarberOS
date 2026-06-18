@@ -174,46 +174,50 @@ document.getElementById(
 
 function mostrarInicio(){
 
-ocultarSecciones();
+    ocultarSecciones();
 
-document.getElementById(
-    "inicio"
-).style.display = "block";
+    document.getElementById(
+        "inicio"
+    ).style.display = "block";
 
-cargarInicio();
+    activarBoton("btnInicio");
 
+    cargarInicio();
 }
 
 function mostrarAgenda(){
 
-ocultarSecciones();
+    ocultarSecciones();
 
-document.getElementById(
-    "agenda"
-).style.display = "block";
+    document.getElementById(
+        "agenda"
+    ).style.display = "block";
 
-cargarTurnos();
+    activarBoton("btnAgenda");
 
+    cargarTurnos();
 }
 
 function mostrarHistorial(){
 
-ocultarSecciones();
+    ocultarSecciones();
 
-document.getElementById(
-    "historial"
-).style.display = "block";
+    document.getElementById(
+        "historial"
+    ).style.display = "block";
 
+    activarBoton("btnHistorial");
 }
 
 function mostrarConfiguracion(){
 
-ocultarSecciones();
+    ocultarSecciones();
 
-document.getElementById(
-    "configuracion"
-).style.display = "block";
+    document.getElementById(
+        "configuracion"
+    ).style.display = "block";
 
+    activarBoton("btnConfiguracion");
 }
 
 async function guardarTurno(){
@@ -416,4 +420,17 @@ document.getElementById(
 ).textContent =
     ganancias;
 
+}
+
+function activarBoton(id){
+
+    document
+        .querySelectorAll(".menu button")
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+    document
+        .getElementById(id)
+        .classList.add("active");
 }
