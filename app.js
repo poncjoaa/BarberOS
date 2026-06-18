@@ -1,96 +1,182 @@
-const supabaseUrl = "https://jyucjninnzwmycxtncjj.supabase.co";
+const supabaseUrl =
+"https://jyucjninnzwmycxtncjj.supabase.co";
 
 const supabaseKey =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dWNqbmlubnp3bXljeHRuY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTQ0NzMsImV4cCI6MjA5NzI5MDQ3M30.g8BiPO9wDPoWNk-nki0tRA4OLJn0fZuAqFskg3KEHBk";
+"TU_ANON_KEY";
 
-const supabaseClient = supabase.createClient(
+const supabaseClient =
+supabase.createClient(
     supabaseUrl,
     supabaseKey
 );
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const btnIngresar = document.getElementById("btnIngresar");
-    const btnNuevoTurno = document.getElementById("btnNuevoTurno");
-    const btnGuardarTurno = document.getElementById("btnGuardarTurno");
-    const btnAgenda = document.getElementById("btnAgenda");
+    const btnIngresar =
+        document.getElementById("btnIngresar");
+
+    const btnNuevoTurno =
+        document.getElementById("btnNuevoTurno");
+
+    const btnGuardarTurno =
+        document.getElementById("btnGuardarTurno");
+
+    const btnAgenda =
+        document.getElementById("btnAgenda");
+
+    const btnHistorial =
+        document.getElementById("btnHistorial");
+
+    const btnServicios =
+        document.getElementById("btnServicios");
+
+    const btnConfiguracion =
+        document.getElementById("btnConfiguracion");
 
     // LOGIN
+
     btnIngresar.addEventListener("click", async () => {
 
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
+        const username =
+            document.getElementById("username").value;
 
-        const { data } = await supabaseClient
+        const password =
+            document.getElementById("password").value;
+
+        const { data } =
+            await supabaseClient
             .from("usuarios")
             .select("*")
             .eq("username", username)
             .eq("password_hash", password)
             .single();
 
-        if (data) {
+        if (!data) {
 
-            document.getElementById("login").style.display = "none";
-            document.getElementById("inicio").style.display = "block";
+            alert(
+                "Usuario o contraseña incorrectos"
+            );
 
-            cargarTurnos();
-
-        } else {
-            alert("Usuario o contraseña incorrectos");
+            return;
         }
+
+        document.getElementById("login").style.display =
+            "none";
+
+        document.getElementById("inicio").style.display =
+            "block";
 
     });
 
     // NUEVO TURNO
+
     btnNuevoTurno.addEventListener("click", () => {
 
-        document.getElementById("formTurno").style.display = "block";
+        ocultarSecciones();
+
+        document.getElementById(
+            "formTurno"
+        ).style.display = "block";
+
+    });
+
+    // AGENDA
+
+    btnAgenda.addEventListener("click", () => {
+
+        ocultarSecciones();
+
+        document.getElementById(
+            "agenda"
+        ).style.display = "block";
+
+        cargarTurnos();
+
+    });
+
+    // HISTORIAL
+
+    btnHistorial.addEventListener("click", () => {
+
+        ocultarSecciones();
+
+        document.getElementById(
+            "historial"
+        ).style.display = "block";
+
+    });
+
+    // SERVICIOS
+
+    btnServicios.addEventListener("click", () => {
+
+        ocultarSecciones();
+
+        document.getElementById(
+            "servicios"
+        ).style.display = "block";
+
+    });
+
+    // CONFIG
+
+    btnConfiguracion.addEventListener("click", () => {
+
+        ocultarSecciones();
+
+        document.getElementById(
+            "configuracion"
+        ).style.display = "block";
 
     });
 
     // GUARDAR TURNO
+
     btnGuardarTurno.addEventListener("click", async () => {
 
-        const cliente = document.getElementById("cliente").value;
-        const fecha = document.getElementById("fecha").value;
-        const hora = document.getElementById("hora").value;
+        const cliente =
+            document.getElementById("cliente").value;
 
-        const { data: userData } = await supabaseClient
+        const fecha =
+            document.getElementById("fecha").value;
+
+        const hora =
+            document.getElementById("hora").value;
+
+        const { data:userData } =
+            await supabaseClient
             .from("usuarios")
             .select("id")
-            .eq("username", "admin")
+            .eq("username","admin")
             .single();
 
-        const { error } = await supabaseClient
+        const { error } =
+            await supabaseClient
             .from("turnos")
             .insert([{
-                usuario_id: userData.id,
-                fecha: fecha,
-                hora: hora,
-                cliente_nombre: cliente,
-                servicio_id: 1,
-                precio: 5000,
-                estado: "reservado"
+                usuario_id:userData.id,
+                fecha,
+                hora,
+                cliente_nombre:cliente,
+                servicio_id:1,
+                precio:5000,
+                estado:"reservado"
             }]);
 
-        if (!error) {
+        if(error){
 
-            alert("Turno guardado");
-            document.getElementById("formTurno").style.display = "none";
-
-            cargarTurnos();
-
-        } else {
-            alert("Error al guardar turno");
             console.log(error);
+
+            alert(
+                "Error al guardar turno"
+            );
+
+            return;
         }
 
-    });
-
-    // BOTÓN AGENDA
-    btnAgenda.addEventListener("click", () => {
-
-        document.getElementById("agenda").style.display = "block";
+        alert(
+            "Turno guardado"
+        );
 
         cargarTurnos();
 
@@ -98,47 +184,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// =========================
-// CARGAR TURNOS
-// =========================
+function ocultarSecciones(){
 
-async function cargarTurnos() {
+    document.getElementById("formTurno")
+        .style.display = "none";
 
-    const { data: userData } = await supabaseClient
+    document.getElementById("agenda")
+        .style.display = "none";
+
+    document.getElementById("historial")
+        .style.display = "none";
+
+    document.getElementById("servicios")
+        .style.display = "none";
+
+    document.getElementById("configuracion")
+        .style.display = "none";
+}
+
+async function cargarTurnos(){
+
+    const { data:userData } =
+        await supabaseClient
         .from("usuarios")
         .select("id")
-        .eq("username", "admin")
+        .eq("username","admin")
         .single();
 
-    const { data: turnos } = await supabaseClient
+    const { data:turnos } =
+        await supabaseClient
         .from("turnos")
         .select("*")
         .eq("usuario_id", userData.id)
-        .order("fecha", { ascending: true });
+        .order("fecha");
 
-    const contenedor = document.getElementById("listaTurnos");
-    contenedor.innerHTML = "";
+    const lista =
+        document.getElementById(
+            "listaTurnos"
+        );
 
-    if (!turnos || turnos.length === 0) {
-        contenedor.innerHTML = "<p>No hay turnos aún</p>";
+    lista.innerHTML = "";
+
+    if(!turnos || turnos.length === 0){
+
+        lista.innerHTML =
+            "<p>No hay turnos</p>";
+
         return;
     }
 
-    turnos.forEach(t => {
+    turnos.forEach(turno => {
 
-        const div = document.createElement("div");
+        const div =
+            document.createElement("div");
 
-        div.style.border = "1px solid #ccc";
-        div.style.margin = "5px";
-        div.style.padding = "10px";
+        div.className = "turno";
 
         div.innerHTML = `
-            <b>${t.fecha}</b> - ${t.hora} <br>
-            Cliente: ${t.cliente_nombre} <br>
-            Estado: ${t.estado}
+            <strong>${turno.fecha}</strong>
+            <br>
+            ${turno.hora}
+            <br>
+            ${turno.cliente_nombre}
+            <br>
+            ${turno.estado}
         `;
 
-        document.getElementById("listaTurnos").appendChild(div);
+        lista.appendChild(div);
+
     });
 
 }
