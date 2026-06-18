@@ -7,6 +7,9 @@ content="width=device-width, initial-scale=1.0"
 <title>BarberOS</title><link
     rel="stylesheet"
     href="style.css"
+><link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
 ><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><h1>BarberOS</h1><!-- LOGIN --><div id="login"><h2>Iniciar sesión</h2>
 
 <input
@@ -52,13 +55,8 @@ content="width=device-width, initial-scale=1.0"
         <h3>Ganancias hoy</h3>
 
         <p>
-
             $
-
-            <span id="gananciasHoy">
-                0
-            </span>
-
+            <span id="gananciasHoy">0</span>
         </p>
 
     </div>
@@ -75,9 +73,7 @@ content="width=device-width, initial-scale=1.0"
     <h2>Agenda</h2>
 
     <button id="btnNuevoTurno">
-
         + Nuevo turno
-
     </button>
 
     <div
@@ -102,9 +98,7 @@ content="width=device-width, initial-scale=1.0"
         >
 
         <button id="btnGuardarTurno">
-
             Guardar turno
-
         </button>
 
     </div>
@@ -155,9 +149,7 @@ content="width=device-width, initial-scale=1.0"
     >
 
     <button id="btnGuardarConfig">
-
         Guardar configuración
-
     </button>
 
 </section>
@@ -168,25 +160,41 @@ content="width=device-width, initial-scale=1.0"
 
     <button id="btnInicio">
 
-        Inicio
+        <span class="material-symbols-outlined">
+            home
+        </span>
+
+        <small>Inicio</small>
 
     </button>
 
     <button id="btnAgenda">
 
-        Agenda
+        <span class="material-symbols-outlined">
+            calendar_month
+        </span>
+
+        <small>Agenda</small>
 
     </button>
 
     <button id="btnHistorial">
 
-        Historial
+        <span class="material-symbols-outlined">
+            bar_chart
+        </span>
+
+        <small>Historial</small>
 
     </button>
 
     <button id="btnConfiguracion">
 
-        Configuración
+        <span class="material-symbols-outlined">
+            settings
+        </span>
+
+        <small>Config.</small>
 
     </button>
 
