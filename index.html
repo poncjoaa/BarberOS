@@ -33,15 +33,19 @@
 
 <body>
 
-    <h1 id="tituloBarberia">
-        BarberOS
-    </h1>
-
     <!-- LOGIN -->
 
     <div id="login">
 
-        <h2>Iniciar sesión</h2>
+        <div class="hero">
+
+            <h1>BarberOS</h1>
+
+            <p>
+                Gestión premium para barberías
+            </p>
+
+        </div>
 
         <input
             type="text"
@@ -69,27 +73,41 @@
 
         <section id="inicio">
 
-            <h2>Inicio</h2>
+            <div class="hero hero-app">
 
-            <div class="card">
+                <h1 id="tituloBarberia">
+                    BarberOS
+                </h1>
 
-                <h3>Turnos ocupados hoy</h3>
-
-                <p id="ocupadosHoy">0</p>
-
-            </div>
-
-            <div class="card">
-
-                <h3>Turnos libres hoy</h3>
-
-                <p id="libresHoy">0</p>
+                <p>
+                    Gestión inteligente de turnos
+                </p>
 
             </div>
 
-            <div class="card">
+            <div class="stats-grid">
 
-                <h3>Ganancias hoy</h3>
+                <div class="card stat-card">
+
+                    <h3>Ocupados</h3>
+
+                    <p id="ocupadosHoy">0</p>
+
+                </div>
+
+                <div class="card stat-card">
+
+                    <h3>Libres</h3>
+
+                    <p id="libresHoy">0</p>
+
+                </div>
+
+            </div>
+
+            <div class="card ganancias-card">
+
+                <h3>Ganancias de hoy</h3>
 
                 <p>
                     $
@@ -165,7 +183,7 @@
 
         </section>
 
-        <!-- CONFIGURACION -->
+        <!-- CONFIGURACIÓN -->
 
         <section
             id="configuracion"
@@ -176,7 +194,7 @@
 
             <div class="card">
 
-                <h3>Datos de la barbería</h3>
+                <h3>Nombre de la barbería</h3>
 
                 <input
                     type="text"
@@ -185,26 +203,26 @@
                 >
 
                 <button id="btnGuardarConfig">
-                    Guardar
+                    Guardar cambios
                 </button>
 
             </div>
 
             <div class="card">
 
-                <h3>Servicio</h3>
+                <h3>Precio del servicio</h3>
 
                 <input
                     type="number"
                     id="precioServicio"
-                    placeholder="Precio del servicio"
+                    placeholder="Precio"
                 >
 
             </div>
 
         </section>
 
-        <!-- MENU INFERIOR -->
+        <!-- MENU -->
 
         <nav class="menu">
 
