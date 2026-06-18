@@ -1,3 +1,11 @@
+:root{
+
+    --gold:#d4af37;
+    --dark:#111111;
+    --dark2:#1b1b1b;
+    --light:#f5f5f5;
+}
+
 *{
 margin:0;
 padding:0;
@@ -5,6 +13,9 @@ box-sizing:border-box;
 }
 
 body{
+
+background:var(--light);
+color:var(--dark);
 
 font-family:Arial, sans-serif;
 
@@ -21,11 +32,16 @@ color:#222;
 }
 
 h1{
+
     text-align:center;
-    font-size:48px;
+
+    margin-bottom:24px;
+
+    font-size:28px;
+
     font-weight:800;
-    letter-spacing:-2px;
-    margin:10px 0 30px;
+
+    color:var(--dark);
 }
 
 h2{
@@ -54,21 +70,13 @@ background:white;
 
 button{
 
-    width:100%;
-
-    padding:16px;
-
     border:none;
 
-    border-radius:18px;
+    border-radius:16px;
 
-    font-size:16px;
+    padding:14px;
 
-    font-weight:600;
-
-    background:black;
-
-    color:white;
+    font-weight:700;
 
     cursor:pointer;
 
@@ -78,7 +86,6 @@ button{
 button:active{
 
     transform:scale(.97);
-
 }
 
 .card{
@@ -91,10 +98,10 @@ button:active{
 
     margin-bottom:16px;
 
-    box-shadow:
-        0 10px 30px rgba(0,0,0,.08);
+    border-left:5px solid var(--gold);
 
-    border:1px solid rgba(0,0,0,.05);
+    box-shadow:
+    0 8px 25px rgba(0,0,0,.08);
 }
 
 .card h3{
@@ -111,7 +118,11 @@ color:#666;
 
     font-size:42px;
 
-    font-weight:700;
+    font-weight:800;
+
+    color:var(--gold);
+
+    margin-top:10px;
 }
 
 .seccion{
@@ -176,22 +187,22 @@ box-shadow:
 
     position:fixed;
 
-    bottom:0;
+    bottom:10px;
 
-    left:0;
+    left:10px;
 
-    width:100%;
-
-    display:flex;
-
-    gap:10px;
-
-    padding:12px;
+    right:10px;
 
     background:white;
 
+    border-radius:22px;
+
     box-shadow:
-        0 -5px 25px rgba(0,0,0,.08);
+    0 10px 35px rgba(0,0,0,.15);
+
+    display:flex;
+
+    overflow:hidden;
 }
 
 .menu button{
@@ -269,9 +280,9 @@ box-shadow:
 
 .menu button.active{
 
-    background:black;
+    background:var(--gold);
 
-    color:white;
+    color:black;
 }
 
 .menu button.active .material-symbols-outlined{
