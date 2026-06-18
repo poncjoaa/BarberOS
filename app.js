@@ -436,14 +436,18 @@ if(turnos){
         turnos.length;
 
     turnos.forEach(
-        turno => {
+    turno => {
+
+        if(turno.estado !== "cancelado"){
 
             ganancias +=
                 Number(
                     turno.precio || 0
                 );
         }
-    );
+    }
+);
+
 }
 
 const libres =
