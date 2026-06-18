@@ -694,10 +694,6 @@ async function cargarProximosTurnos() {
         return;
     }
 
-turnos = turnos.filter(
-    t => t.estado !== "cancelado"
-);
-
     turnos.forEach(turno => {
 
         contenedor.innerHTML += `
