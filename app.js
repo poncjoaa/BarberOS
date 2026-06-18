@@ -152,7 +152,8 @@ function mostrarAgenda() {
     cargarTurnos();
 }
 
-function mostrarHistorial() {
+function cargarHistorialSemanal()
+buscarFecha() {
 
     ocultarSecciones();
     document.getElementById("historial").style.display = "block";
