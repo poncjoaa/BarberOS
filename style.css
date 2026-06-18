@@ -8,7 +8,7 @@ body{
 
 font-family:Arial, sans-serif;
 
-background:#f3f4f6;
+background:#f5f7fb;
 
 max-width:500px;
 
@@ -21,13 +21,11 @@ color:#222;
 }
 
 h1{
-
-text-align:center;
-
-margin-bottom:25px;
-
-font-size:32px;
-
+    text-align:center;
+    font-size:48px;
+    font-weight:800;
+    letter-spacing:-2px;
+    margin:10px 0 30px;
 }
 
 h2{
@@ -83,18 +81,12 @@ transform:scale(0.98);
 }
 
 .card{
-
-background:white;
-
-border-radius:16px;
-
-padding:18px;
-
-margin-bottom:15px;
-
-box-shadow:
-0 2px 10px rgba(0,0,0,.08);
-
+    background:white;
+    border-radius:24px;
+    padding:22px;
+    margin-bottom:16px;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.08);
 }
 
 .card h3{
@@ -108,11 +100,8 @@ color:#666;
 }
 
 .card p{
-
-font-size:28px;
-
-font-weight:bold;
-
+    font-size:42px;
+    font-weight:700;
 }
 
 .seccion{
