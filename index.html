@@ -1,42 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarberOS</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BarberOS</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <h1>BarberOS</h1>
+<h1>BarberOS</h1>
 
-    <div id="login">
+<!-- LOGIN -->
 
-    <h2>Login</h2>
-<button id="btnNuevoTurno">
-    + Nuevo turno
-</button>
+<div id="login">
 
-<br><br>
+    <h2>Iniciar sesión</h2>
 
-<div id="formTurno" style="display:none">
-<div id="agenda">
-    <h2>Agenda</h2>
-    <div id="listaTurnos"></div>
+    <input
+        type="text"
+        id="username"
+        placeholder="Usuario"
+    >
+
+    <input
+        type="password"
+        id="password"
+        placeholder="Contraseña"
+    >
+
+    <button id="btnIngresar">
+        Ingresar
+    </button>
+
 </div>
+
+<!-- PANEL PRINCIPAL -->
+
+<div id="inicio" style="display:none;">
+
+    <h2>Panel</h2>
+
+    <button id="btnNuevoTurno">
+        + Nuevo turno
+    </button>
+
+    <button id="btnAgenda">
+        Agenda
+    </button>
+
+    <button id="btnHistorial">
+        Historial
+    </button>
+
+    <button id="btnServicios">
+        Servicios
+    </button>
+
+    <button id="btnConfiguracion">
+        Configuración
+    </button>
+
+</div>
+
+<!-- NUEVO TURNO -->
+
+<div id="formTurno" class="seccion">
 
     <h2>Nuevo turno</h2>
 
-    <input type="text" id="cliente" placeholder="Nombre cliente">
+    <input
+        type="text"
+        id="cliente"
+        placeholder="Nombre cliente"
+    >
 
-    <br><br>
+    <input
+        type="date"
+        id="fecha"
+    >
 
-    <input type="date" id="fecha">
+    <input
+        type="time"
+        id="hora"
+    >
 
-    <br><br>
+    <button id="btnGuardarTurno">
+        Guardar turno
+    </button>
 
-    <input type="time" id="hora">
+</div>
 
+<!-- AGENDA -->
+
+<div id="agenda" class="seccion">
+
+    <h2>Agenda</h2>
+
+    <div id="listaTurnos"></div>
+
+</div>
+
+<!-- HISTORIAL -->
+
+<div id="historial" class="seccion">
+
+    <h2>Historial</h2>
+
+    <p>Próximamente...</p>
+
+</div>
+
+<!-- SERVICIOS -->
+
+<div id="servicios" class="seccion">
+
+    <h2>Servicios</h2>
+
+    <p>Próximamente...</p>
+
+</div>
+
+<!-- CONFIG -->
+
+<div id="configuracion" class="seccion">
+
+    <h2>Configuración</h2>
+
+    <p>Próximamente...</p>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
     <br><br>
 
     <button id="btnGuardarTurno">
