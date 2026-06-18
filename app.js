@@ -252,34 +252,31 @@ function mostrarHistorial() {
 
     ocultarSecciones();
 
-    document.getElementById(
-        "historial"
-    ).style.display = "block";
+    document.getElementById("historial").style.display = "block";
 
-    activarBoton(
-        "btnHistorial"
-    );
+    activarBoton("btnHistorial");
 
-    const lista =
-        document.getElementById(
-            "listaHistorial"
-        );
+    const resultado =
+        document.getElementById("resultadoFecha");
 
-    if (!lista) return;
+    if (resultado) {
 
-    lista.innerHTML = `
-        <div class="card">
-            <h3>
-                Historial
-            </h3>
-            <p style="
-                font-size:16px;
-                color:#444;
-            ">
-                Próximamente disponible
-            </p>
-        </div>
-    `;
+        resultado.innerHTML = `
+            <div class="card">
+
+                <h3>Historial</h3>
+
+                <p style="
+                    font-size:18px;
+                    color:#444;
+                    margin-top:10px;
+                ">
+                    Próximamente disponible
+                </p>
+
+            </div>
+        `;
+    }
 }
 
 function mostrarConfiguracion() {
@@ -456,10 +453,9 @@ async function cargarTurnos() {
             `turno turno-${turno.estado}`;
 
         div.innerHTML = `
-            <div class="turno-hora">
-                ${turno.hora}
-            </div>
-
+           <div class="turno-hora">
+    ${turno.hora.substring(0,5)}
+</div>
             <div class="turno-cliente">
                 ${turno.cliente_nombre}
             </div>
@@ -698,13 +694,17 @@ async function cargarProximosTurnos() {
         return;
     }
 
+turnos = turnos.filter(
+    t => t.estado !== "cancelado"
+);
+
     turnos.forEach(turno => {
 
         contenedor.innerHTML += `
             <div class="proximo-item">
                 <div class="proximo-hora">
-                    ${turno.hora}
-                </div>
+    ${turno.hora.substring(0,5)}
+</div>
 
                 <div class="proximo-cliente">
                     ${turno.cliente_nombre}
