@@ -37,7 +37,7 @@ font-size:28px;
 
 font-weight:800;
 
-color:var(--gold);
+color:var(--primary);
 
 }
 
@@ -81,7 +81,7 @@ cursor:pointer;
 
 transition:.2s;
 
-background:var(--gold);
+background:var(--primary);
 
 color:var(--light);
 
@@ -103,7 +103,7 @@ padding:22px;
 
 margin-bottom:16px;
 
-border-left:5px solid var(--gold);
+border-left:5px solid var(--primary);
 
 box-shadow:
 0 8px 25px rgba(0,0,0,.08);
@@ -172,7 +172,7 @@ border-radius:18px;
 
 margin-bottom:12px;
 
-border-left:4px solid var(--gold);
+border-left:4px solid var(--primary);
 
 box-shadow:
 0 5px 15px rgba(0,0,0,.08);
@@ -270,7 +270,7 @@ border-radius:0;
 
 .menu button.active{
 
-background:var(--gold);
+background:var(--primary);
 
 color:black;
 
@@ -324,7 +324,7 @@ font-size:20px;
 
 font-weight:800;
 
-color:var(--gold);
+color:var(--primary);
 
 }
 
@@ -346,7 +346,7 @@ font-size:22px;
 
 font-weight:800;
 
-color:var(--gold);
+color:var(--primary);
 
 margin-bottom:6px;
 
@@ -374,7 +374,7 @@ border-radius:20px;
 
 background:rgba(212,175,55,.15);
 
-color:var(--gold);
+color:var(--primary);
 
 font-weight:700;
 
@@ -396,7 +396,7 @@ padding:40px 20px;
 
 font-size:60px;
 
-color:var(--gold);
+color:var(--primary);
 
 margin-bottom:10px;
 
@@ -454,7 +454,7 @@ margin-bottom:18px;
 
     border-radius:12px;
 
-    background:var(--gold);
+    background:var(--primary);
 
     color:black;
 }
