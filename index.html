@@ -5,11 +5,11 @@ content="width=device-width, initial-scale=1.0"
 «»
 
 <title>BarberOS</title><link
-    rel="stylesheet"
-    href="style.css"
+rel="stylesheet"
+href="style.css"
 ><link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+rel="stylesheet"
+href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
 ><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><h1 id="tituloBarberia">
     BarberOS
 </h1><!-- LOGIN --><div id="login"><h2>Iniciar sesión</h2>
@@ -60,6 +60,14 @@ content="width=device-width, initial-scale=1.0"
             $
             <span id="gananciasHoy">0</span>
         </p>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Próximos turnos</h3>
+
+        <div id="proximosTurnos"></div>
 
     </div>
 
@@ -118,14 +126,7 @@ content="width=device-width, initial-scale=1.0"
 
     <h2>Historial</h2>
 
-    <div id="listaHistorial">
-
-        <p>
-            Aquí aparecerán los turnos completados,
-            cancelados y los ingresos.
-        </p>
-
-    </div>
+    <div id="listaHistorial"></div>
 
 </section>
 
@@ -138,21 +139,33 @@ content="width=device-width, initial-scale=1.0"
 
     <h2>Configuración</h2>
 
-    <input
-        type="text"
-        id="nombreBarberia"
-        placeholder="Nombre de la barbería"
-    >
+    <div class="card">
 
-    <input
-        type="number"
-        id="precioServicio"
-        placeholder="Precio del servicio"
-    >
+        <h3>Datos de la barbería</h3>
 
-    <button id="btnGuardarConfig">
-        Guardar configuración
-    </button>
+        <input
+            type="text"
+            id="nombreBarberia"
+            placeholder="Nombre de la barbería"
+        >
+
+        <button id="btnGuardarConfig">
+            Guardar
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Servicio</h3>
+
+        <input
+            type="number"
+            id="precioServicio"
+            placeholder="Precio del servicio"
+        >
+
+    </div>
 
 </section>
 
@@ -202,4 +215,5 @@ content="width=device-width, initial-scale=1.0"
 
 </nav>
 
-</div><script src="app.js"></script></body></html>
+</div><script src="app.js"></script></body>
+</html>
