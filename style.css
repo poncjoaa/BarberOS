@@ -242,3 +242,15 @@ box-shadow:
 
     font-weight:600;
 }
+
+.menu button.active{
+
+    background:black;
+
+    color:white;
+}
+
+.menu button.active .material-symbols-outlined{
+
+    color:white;
+}
