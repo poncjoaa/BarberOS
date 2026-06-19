@@ -154,7 +154,9 @@ function ocultar() {
 function mostrarInicio() {
     ocultar();
     document.getElementById("inicio").style.display = "block";
+
     cargarInicio();
+    cargarProximosTurnos();
 }
 
 function mostrarAgenda() {
@@ -277,6 +279,52 @@ async function editarTurno(id) {
 /* ================= DASHBOARD ================= */
 
 async function cargarInicio() {
+
+async function cargarProximosTurnos() {
+
+    const hoy = new Date().toISOString().split("T")[0];
+
+    const { data } = await supabaseClient
+        .from("turnos")
+        .select("*")
+        .eq("usuario_id", usuarioActual.id)
+        .eq("fecha", hoy)
+        .neq("estado", "cancelado")
+        .order("hora", { ascending: true });
+
+    const contenedor =
+        document.getElementById("proximosTurnos");
+
+    if (!contenedor) return;
+
+    contenedor.innerHTML = "";
+
+    if (!data || data.length === 0) {
+
+        contenedor.innerHTML = `
+            <div class="empty-state">
+                Sin turnos para hoy
+            </div>
+        `;
+
+        return;
+    }
+
+    data.forEach(turno => {
+
+        contenedor.innerHTML += `
+            <div class="proximo-item">
+                <div class="proximo-hora">
+                    ${turno.hora.substring(0,5)}
+                </div>
+
+                <div class="proximo-cliente">
+                    ${turno.cliente_nombre}
+                </div>
+            </div>
+        `;
+    });
+}
 
     const hoy = new Date().toISOString().split("T")[0];
 
