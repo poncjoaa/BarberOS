@@ -293,3 +293,13 @@ function abrirWhatsApp(tel) {
     if (!tel) return;
     window.open(`https://wa.me/${tel}`, "_blank");
 }
+
+document.getElementById("linkReservas").value =
+window.location.origin + "/reservar.html?slug=" + usuarioActual.slug;
+
+document.getElementById("btnCopiarLink")?.addEventListener("click", () => {
+    const input = document.getElementById("linkReservas");
+    input.select();
+    document.execCommand("copy");
+    alert("Link copiado");
+});
