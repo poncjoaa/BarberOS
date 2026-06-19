@@ -67,42 +67,52 @@ async function cargarConfiguracion() {
         .eq("usuario_id", usuarioActual.id)
         .single();
 
-    configuracionActual = data || {};
+    if (!data) return;
+
+    configuracionActual = data;
 
     const nombre = document.getElementById("nombreBarberia");
     const precio = document.getElementById("precioServicio");
-    const link = document.getElementById("linkReservas");
 
-    if (nombre) nombre.value = data?.nombre_barberia || "";
-    if (precio) precio.value = data?.precio_servicio || 0;
+    if (nombre) nombre.value = data.nombre_barberia ?? "";
 
-    /* LINK DE RESERVA */
-    if (link && usuarioActual?.slug) {
-        link.value = `${window.location.origin}/reservar.html?slug=${usuarioActual.slug}`;
+    if (precio) precio.value = data.precio_servicio ?? 0;
+
+    // actualizar título
+    const titulo = document.getElementById("tituloBarberia");
+    if (titulo && data.nombre_barberia) {
+        titulo.textContent = data.nombre_barberia;
     }
 }
 
 async function guardarConfiguracion() {
 
-    const nombre = document.getElementById("nombreBarberia").value;
-    const precio = Number(document.getElementById("precioServicio").value);
+    const nombreBarberia = document.getElementById("nombreBarberia").value;
+    const precioServicio = Number(document.getElementById("precioServicio").value || 0);
 
     const { error } = await supabaseClient
         .from("configuracion")
         .upsert({
             usuario_id: usuarioActual.id,
-            nombre_barberia: nombre,
-            precio_servicio: precio
+            nombre_barberia: nombreBarberia,
+            precio_servicio: precioServicio
         });
 
-    if (error) return alert("Error al guardar");
+    if (error) {
+        alert("Error al guardar configuración");
+        return;
+    }
 
     configuracionActual = {
-        nombre_barberia: nombre,
-        precio_servicio: precio
+        nombre_barberia: nombreBarberia,
+        precio_servicio: precioServicio
     };
 
-    alert("Configuración guardada");
+    // actualizar UI inmediatamente
+    const titulo = document.getElementById("tituloBarberia");
+    if (titulo) titulo.textContent = nombreBarberia;
+
+    alert("Configuración guardada correctamente");
 }
 
 /* ================= NAV ================= */
