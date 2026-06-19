@@ -278,7 +278,8 @@ async function editarTurno(id) {
 
 /* ================= DASHBOARD ================= */
 
-async function cargarInicio() {
+/* ================= DASHBOARD ================= */
+
 async function cargarProximosTurnos() {
 
     const hoy = new Date().toISOString().split("T")[0];
@@ -324,6 +325,8 @@ async function cargarProximosTurnos() {
         `;
     });
 }
+
+async function cargarInicio() {
 
     const hoy = new Date().toISOString().split("T")[0];
 
