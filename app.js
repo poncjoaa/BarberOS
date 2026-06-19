@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.style.display = form.style.display === "none" ? "block" : "none";
     });
 
-    document.getElementById("btnCopiarLink")?.addEventListener("click", copiarLinkReservas);
+    document.getElementById("btnBuscarFecha")?.addEventListener("click", buscarPorFecha);
 });
 
 /* ================= LOGIN ================= */
@@ -38,18 +38,14 @@ async function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    const { data, error } =
-        await supabaseClient
-            .from("usuarios")
-            .select("*")
-            .eq("username", username)
-            .eq("password_hash", password)
-            .single();
+    const { data } = await supabaseClient
+        .from("usuarios")
+        .select("*")
+        .eq("username", username)
+        .eq("password_hash", password)
+        .single();
 
-    if (error || !data) {
-        alert("Usuario o contraseña incorrectos");
-        return;
-    }
+    if (!data) return alert("Usuario o contraseña incorrectos");
 
     usuarioActual = data;
 
@@ -57,8 +53,6 @@ async function login() {
     document.getElementById("app").style.display = "block";
 
     await cargarConfiguracion();
-    await cargarInicio();
-
     mostrarInicio();
 }
 
@@ -66,117 +60,70 @@ async function login() {
 
 async function cargarConfiguracion() {
 
-    const { data } =
-        await supabaseClient
-            .from("configuracion")
-            .select("*")
-            .eq("usuario_id", usuarioActual.id)
-            .single();
+    const { data } = await supabaseClient
+        .from("configuracion")
+        .select("*")
+        .eq("usuario_id", usuarioActual.id)
+        .single();
 
-    if (!data) return;
+    if (data) configuracionActual = data;
 
-    configuracionActual = data;
+    const nombre = document.getElementById("nombreBarberia");
+    const precio = document.getElementById("precioServicio");
 
-    document.getElementById("nombreBarberia").value =
-        data.nombre_barberia || "";
-
-    document.getElementById("precioServicio").value =
-        data.precio_servicio || "";
-
-    document.getElementById("tituloBarberia").textContent =
-        data.nombre_barberia;
-
-    cargarLinkReservas();
+    if (nombre) nombre.value = data?.nombre_barberia || "";
+    if (precio) precio.value = data?.precio_servicio || 0;
 }
 
 async function guardarConfiguracion() {
 
-    const nombreBarberia =
-        document.getElementById("nombreBarberia").value;
+    const nombre = document.getElementById("nombreBarberia").value;
+    const precio = Number(document.getElementById("precioServicio").value);
 
-    const precioServicio =
-        Number(document.getElementById("precioServicio").value);
+    const { error } = await supabaseClient
+        .from("configuracion")
+        .upsert({
+            usuario_id: usuarioActual.id,
+            nombre_barberia: nombre,
+            precio_servicio: precio
+        });
 
-    const { error } =
-        await supabaseClient
-            .from("configuracion")
-            .upsert({
-                usuario_id: usuarioActual.id,
-                nombre_barberia: nombreBarberia,
-                precio_servicio: precioServicio
-            });
+    if (error) return alert("Error al guardar");
 
-    if (error) {
-        alert("Error al guardar configuración");
-        return;
-    }
+    configuracionActual = { nombre_barberia: nombre, precio_servicio: precio };
 
-    configuracionActual = {
-        nombre_barberia: nombreBarberia,
-        precio_servicio: precioServicio
-    };
-
-    document.getElementById("tituloBarberia").textContent =
-        nombreBarberia;
-
-    cargarLinkReservas();
-
-    alert("Configuración guardada");
+    alert("Guardado");
 }
 
-/* ================= LINK RESERVAS ================= */
+/* ================= NAVEGACION ================= */
 
-function cargarLinkReservas() {
-
-    const input = document.getElementById("linkReservas");
-
-    if (!input || !usuarioActual?.slug) return;
-
-    input.value =
-        `${window.location.origin}/reservar.html?slug=${usuarioActual.slug}`;
-}
-
-function copiarLinkReservas() {
-
-    const input = document.getElementById("linkReservas");
-
-    if (!input) return;
-
-    navigator.clipboard.writeText(input.value);
-
-    alert("Link copiado");
-}
-
-/* ================= NAV ================= */
-
-function ocultarSecciones() {
-    document.getElementById("inicio").style.display = "none";
-    document.getElementById("agenda").style.display = "none";
-    document.getElementById("historial").style.display = "none";
-    document.getElementById("configuracion").style.display = "none";
+function ocultar() {
+    ["inicio", "agenda", "historial", "configuracion"].forEach(id => {
+        document.getElementById(id).style.display = "none";
+    });
 }
 
 function mostrarInicio() {
-    ocultarSecciones();
+    ocultar();
     document.getElementById("inicio").style.display = "block";
     cargarInicio();
 }
 
 function mostrarAgenda() {
-    ocultarSecciones();
+    ocultar();
     document.getElementById("agenda").style.display = "block";
     cargarTurnos();
 }
 
 function mostrarHistorial() {
-    ocultarSecciones();
+    ocultar();
     document.getElementById("historial").style.display = "block";
+    buscarPorFecha();
 }
 
 function mostrarConfiguracion() {
-    ocultarSecciones();
+    ocultar();
     document.getElementById("configuracion").style.display = "block";
-    cargarConfiguracion();
 }
 
 /* ================= TURNOS ================= */
@@ -187,30 +134,18 @@ async function guardarTurno() {
     const fecha = document.getElementById("fecha").value;
     const hora = document.getElementById("hora").value;
 
-    if (!cliente || !fecha || !hora) {
-        alert("Completa todos los campos");
-        return;
-    }
-
-    const { error } =
-        await supabaseClient.from("turnos").insert([{
+    const { error } = await supabaseClient
+        .from("turnos")
+        .insert([{
             usuario_id: usuarioActual.id,
+            cliente_nombre: cliente,
             fecha,
             hora,
-            cliente_nombre: cliente,
-            precio: configuracionActual?.precio_servicio || 5000,
+            precio: configuracionActual?.precio_servicio || 0,
             estado: "reservado"
         }]);
 
-    if (error) {
-        alert("Error al guardar turno");
-        return;
-    }
-
-    document.getElementById("cliente").value = "";
-    document.getElementById("fecha").value = "";
-    document.getElementById("hora").value = "";
-    document.getElementById("formTurno").style.display = "none";
+    if (error) return alert("Error");
 
     cargarTurnos();
     cargarInicio();
@@ -224,29 +159,66 @@ async function cargarTurnos() {
         .from("turnos")
         .select("*")
         .eq("usuario_id", usuarioActual.id)
-        .order("fecha", { ascending: true })
-        .order("hora", { ascending: true });
+        .order("fecha");
 
     const lista = document.getElementById("listaTurnos");
     lista.innerHTML = "";
 
-    if (!turnos?.length) {
-        lista.innerHTML = "<p>No hay turnos</p>";
-        return;
-    }
+    turnos?.forEach(t => {
 
-    turnos.forEach(turno => {
+        lista.innerHTML += `
+        <div class="turno">
+            <div class="turno-hora">${t.hora?.substring(0,5)}</div>
+            <div class="turno-cliente">${t.cliente_nombre}</div>
 
-        const div = document.createElement("div");
-        div.className = "turno";
+            <span class="estado">${t.estado}</span>
 
-        div.innerHTML = `
-            <div class="turno-hora">${turno.hora.substring(0,5)}</div>
-            <div class="turno-cliente">${turno.cliente_nombre}</div>
+            <div class="acciones-turno">
+
+                <button onclick="abrirWhatsApp('${t.telefono || ''}')">WhatsApp</button>
+
+                <button onclick="editarTurno(${t.id})">Editar</button>
+                <button onclick="completarTurno(${t.id})">Completar</button>
+                <button onclick="cancelarTurno(${t.id})">Cancelar</button>
+                <button onclick="eliminarTurno(${t.id})">Eliminar</button>
+
+            </div>
+        </div>
         `;
-
-        lista.appendChild(div);
     });
+}
+
+/* ================= ACCIONES ================= */
+
+async function completarTurno(id) {
+    await supabaseClient.from("turnos").update({ estado: "completado" }).eq("id", id);
+    cargarTurnos();
+}
+
+async function cancelarTurno(id) {
+    await supabaseClient.from("turnos").update({ estado: "cancelado" }).eq("id", id);
+    cargarTurnos();
+}
+
+async function eliminarTurno(id) {
+    await supabaseClient.from("turnos").delete().eq("id", id);
+    cargarTurnos();
+}
+
+async function editarTurno(id) {
+    const nuevo = prompt("Nuevo nombre");
+    if (!nuevo) return;
+
+    await supabaseClient.from("turnos")
+        .update({ cliente_nombre: nuevo })
+        .eq("id", id);
+
+    cargarTurnos();
+}
+
+function abrirWhatsApp(tel) {
+    if (!tel) return;
+    window.open(`https://wa.me/${tel}`, "_blank");
 }
 
 /* ================= DASHBOARD ================= */
@@ -264,18 +236,39 @@ async function cargarInicio() {
     let ocupados = 0;
     let ganancias = 0;
 
-    if (turnos) {
-
-        ocupados = turnos.filter(t => t.estado !== "cancelado").length;
-
-        turnos.forEach(t => {
-            if (t.estado !== "cancelado") {
-                ganancias += Number(t.precio || 0);
-            }
-        });
-    }
+    turnos?.forEach(t => {
+        if (t.estado !== "cancelado") {
+            ocupados++;
+            ganancias += Number(t.precio || 0);
+        }
+    });
 
     document.getElementById("ocupadosHoy").textContent = ocupados;
-    document.getElementById("libresHoy").textContent = Math.max(0, 20 - ocupados);
     document.getElementById("gananciasHoy").textContent = ganancias;
+}
+
+/* ================= HISTORIAL ================= */
+
+async function buscarPorFecha() {
+
+    const fecha = document.getElementById("fechaBusqueda")?.value;
+    if (!fecha) return;
+
+    const { data } = await supabaseClient
+        .from("turnos")
+        .select("*")
+        .eq("usuario_id", usuarioActual.id)
+        .eq("fecha", fecha);
+
+    const cont = document.getElementById("resultadoFecha");
+    cont.innerHTML = "";
+
+    data?.forEach(t => {
+        cont.innerHTML += `
+            <div class="card">
+                <b>${t.cliente_nombre}</b><br>
+                ${t.hora?.substring(0,5)} - ${t.estado}
+            </div>
+        `;
+    });
 }
