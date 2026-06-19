@@ -1,464 +1,54 @@
-:root{
-
-    --primary:#2563eb;
-    --primary-light:#3b82f6;
-    --dark:#0f172a;
-    --light:#ffffff;
-
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-
-    font-family:Arial,sans-serif;
-    background:var(--dark);
+    font-family:Arial;
+    background:#0f172a;
     color:white;
     max-width:500px;
     margin:auto;
-    padding:20px 15px 110px;
+    padding:20px;
 }
 
-/* TITULOS */
+h2{margin:15px 0}
 
-h1{
-
-    text-align:center;
-    margin-bottom:28px;
-    font-size:34px;
-    font-weight:900;
-    letter-spacing:-1px;
-    color:white;
-}
-
-h2{
-
-    margin-bottom:18px;
-    font-size:24px;
-    font-weight:800;
-}
-
-/* INPUTS */
-
-input{
-
+input,button{
     width:100%;
-
-    padding:15px;
-
-    border:2px solid #e5e7eb;
-
-    border-radius:16px;
-
-    margin-bottom:12px;
-
-    font-size:16px;
-
-    background:#ffffff;
-
-    outline:none;
-
-    transition:.2s;
+    padding:12px;
+    margin:5px 0;
+    border-radius:10px;
+    border:none;
 }
-
-input:focus{
-
-    border-color:var(--primary);
-
-    box-shadow:
-        0 0 0 4px rgba(37,99,235,.15);
-}
-
-input[type="date"],
-input[type="time"],
-input[type="number"],
-input[type="text"],
-input[type="password"]{
-
-    color:#111;
-    font-weight:600;
-}
-
-/* BOTONES */
 
 button{
-
-    border:none;
-    border-radius:16px;
-    padding:14px;
-    font-weight:700;
-    cursor:pointer;
-    transition:.25s;
-
-    background:linear-gradient(
-        135deg,
-        var(--primary),
-        var(--primary-light)
-    );
-
+    background:#2563eb;
     color:white;
+    font-weight:bold;
+    cursor:pointer;
 }
-
-button:active{
-
-    transform:scale(.97);
-}
-
-/* TARJETAS */
 
 .card{
-
     background:white;
-    color:#111;
-    border-radius:24px;
-    padding:22px;
-    margin-bottom:16px;
-
-    box-shadow:
-    0 12px 30px rgba(0,0,0,.18);
-}
-
-.card h3{
-
-    font-size:14px;
-    color:#666;
-    margin-bottom:8px;
-}
-
-.card p{
-
-    font-size:48px;
-    font-weight:900;
-    color:var(--primary);
-}
-
-/* SECCIONES */
-
-.seccion{
-
-    display:none;
-    animation:fade .25s ease;
-}
-
-#inicio{
-
-    display:block;
-}
-
-@keyframes fade{
-
-    from{
-        opacity:0;
-        transform:translateY(10px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-/* LOGIN */
-
-#login{
-
-    margin-top:60px;
-}
-
-#login button{
-
-    width:100%;
-    margin-top:10px;
-}
-
-/* FORMULARIO */
-
-#formTurno{
-
-    background:white;
-    padding:18px;
-    border-radius:22px;
-    margin-top:15px;
-    margin-bottom:15px;
-
-    box-shadow:
-    0 12px 30px rgba(0,0,0,.18);
-}
-
-/* TURNOS */
-
-#listaTurnos{
-
-    margin-top:15px;
-}
-
-.turno{
-
-    background:white;
-    color:#111;
-    padding:18px;
-    border-radius:22px;
-    margin-bottom:14px;
-
-    box-shadow:
-    0 10px 25px rgba(0,0,0,.15);
-}
-
-.turno-hora{
-
-    font-size:22px;
-    font-weight:900;
-    color:var(--primary);
-    margin-bottom:5px;
-}
-
-.turno-cliente{
-
-    font-size:18px;
-    font-weight:700;
-    margin-bottom:10px;
-}
-
-/* ESTADOS */
-
-.estado{
-
-    display:inline-block;
-    padding:8px 14px;
-    border-radius:999px;
-    font-size:13px;
-    font-weight:700;
-}
-
-.estado-reservado{
-
-    background:#dbeafe;
-    color:#2563eb;
-}
-
-.estado-completado{
-
-    background:#d4f8dd;
-    color:#198754;
-}
-
-.estado-cancelado{
-
-    background:#ffd8d8;
-    color:#dc3545;
-}
-
-/* TARJETA SEGÚN ESTADO */
-
-.turno-reservado{
-
-    border-left:6px solid #2563eb;
-}
-
-.turno-completado{
-
-    border-left:6px solid #198754;
-    background:#f1fff5;
-}
-
-.turno-cancelado{
-
-    border-left:6px solid #dc3545;
-    background:#fff5f5;
-}
-
-/* ACCIONES */
-
-.acciones-turno{
-
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:15px;
-}
-
-.acciones-turno button{
-
-    flex:1;
-    min-width:90px;
-    padding:10px;
+    color:black;
+    padding:15px;
     border-radius:12px;
-    font-size:13px;
+    margin:10px 0;
 }
 
-/* PRÓXIMOS TURNOS */
-
-.proximo-item{
-
-    padding:12px 0;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.proximo-item:last-child{
-
-    border-bottom:none;
-}
-
-.proximo-hora{
-
-    font-size:20px;
-    font-weight:900;
-    color:var(--primary);
-}
-
-.proximo-cliente{
-
-    margin-top:4px;
-    color:#444;
-}
-
-/* HISTORIAL */
-
-#listaHistorial,
-#resultadoFecha,
-#resumenSemanal{
-
-    margin-top:15px;
-}
-
-/* EMPTY STATE */
-
-.empty-state{
-
-    text-align:center;
-    padding:40px 20px;
-    color:#111;
-}
-
-.empty-state .material-symbols-outlined{
-
-    font-size:60px;
-    color:var(--primary);
-    margin-bottom:10px;
-}
-
-.empty-state h3{
-
-    margin-bottom:8px;
-}
-
-.empty-state p{
-
-    opacity:.7;
-}
-
-/* HERO */
-
-.hero{
-
-    text-align:center;
-    margin-bottom:25px;
-}
-
-.hero h1{
-
-    font-size:34px;
-    font-weight:900;
-}
-
-.hero p{
-
-    color:#94a3b8;
-    margin-top:6px;
-}
-
-.hero-app{
-
-    margin-bottom:20px;
-}
-
-/* DASHBOARD */
-
-.stats-grid{
-
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-}
-
-.stat-card{
-
-    text-align:center;
-}
-
-.ganancias-card{
-
-    margin-top:12px;
-}
-
-#btnNuevoTurno{
-
-    width:100%;
-}
-
-/* MENU */
+.turno-reservado{border-left:5px solid blue}
+.turno-completado{border-left:5px solid green}
+.turno-cancelado{border-left:5px solid red}
 
 .menu{
-
     position:fixed;
-    bottom:18px;
-    left:15px;
-    right:15px;
-
-    background:rgba(255,255,255,.95);
-
-    backdrop-filter:blur(15px);
-
-    border-radius:28px;
-
-    box-shadow:
-    0 20px 40px rgba(0,0,0,.30);
-
+    bottom:10px;
+    left:0;
+    right:0;
     display:flex;
-    overflow:hidden;
-
-    max-width:470px;
-    margin:auto;
+    justify-content:space-around;
+    background:white;
+    padding:10px;
 }
 
 .menu button{
-
-    flex:1;
-    background:transparent;
-    color:#555;
-    border-radius:0;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-
-    gap:4px;
-    min-height:70px;
-}
-
-.menu button.active{
-
-    background:var(--primary);
-    color:white;
-}
-
-.menu button.active .material-symbols-outlined{
-
-    color:white;
-}
-
-.material-symbols-outlined{
-
-    font-size:26px;
-}
-
-.menu small{
-
-    font-size:11px;
-    font-weight:700;
+    width:auto;
+    background:none;
+    color:black;
 }
