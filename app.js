@@ -168,9 +168,22 @@ function mostrarAgenda() {
 }
 
 function mostrarHistorial() {
+
     ocultar();
+
     document.getElementById("historial").style.display = "block";
-    buscarPorFecha();
+
+    const fechaInput =
+        document.getElementById("fechaBusqueda");
+
+    if (fechaInput && usuarioActual?.created_at) {
+
+        fechaInput.min =
+            usuarioActual.created_at.split("T")[0];
+
+        fechaInput.value =
+            new Date().toISOString().split("T")[0];
+    }
 }
 
 function mostrarConfiguracion() {
