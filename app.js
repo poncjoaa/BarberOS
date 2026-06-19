@@ -1,54 +1,40 @@
-const supabaseUrl =
-    "https://jyucjninnzwmycxtncjj.supabase.co";
+const supabaseUrl = "https://jyucjninnzwmycxtncjj.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dWNqbmlubnp3bXljeHRuY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTQ0NzMsImV4cCI6MjA5NzI5MDQ3M30.g8BiPO9wDPoWNk-nki0tRA4OLJn0fZuAqFskg3KEHBk";
 
-const supabaseKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dWNqbmlubnp3bXljeHRuY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTQ0NzMsImV4cCI6MjA5NzI5MDQ3M30.g8BiPO9wDPoWNk-nki0tRA4OLJn0fZuAqFskg3KEHBk";
-
-const supabaseClient =
-    supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let usuarioActual = null;
 let configuracionActual = null;
 
-/* ================= INIT ================= */
-
+/* INIT */
 document.addEventListener("DOMContentLoaded", () => {
 
-    document.getElementById("btnIngresar")?.addEventListener("click", login);
-    document.getElementById("btnInicio")?.addEventListener("click", mostrarInicio);
-    document.getElementById("btnAgenda")?.addEventListener("click", mostrarAgenda);
+    btn("btnIngresar", login);
+    btn("btnInicio", mostrarInicio);
+    btn("btnAgenda", mostrarAgenda);
+    btn("btnHistorial", mostrarHistorial);
+    btn("btnConfiguracion", mostrarConfiguracion);
 
-    document.getElementById("btnConfiguracion")?.addEventListener("click", async () => {
-        mostrarConfiguracion();
-        await cargarConfiguracion();
-        generarLinkReservas();
-    });
+    btn("btnGuardarTurno", guardarTurno);
+    btn("btnGuardarConfig", guardarConfig);
+    btn("btnBuscarFecha", buscarHistorial);
+    btn("btnCopiarLink", copiarLink);
 
-    document.getElementById("btnGuardarTurno")?.addEventListener("click", guardarTurno);
-    document.getElementById("btnGuardarConfig")?.addEventListener("click", guardarConfiguracion);
-
-    document.getElementById("btnNuevoTurno")?.addEventListener("click", () => {
-        const form = document.getElementById("formTurno");
-        if (!form) return;
-        form.style.display = form.style.display === "none" ? "block" : "none";
-    });
-
-    document.getElementById("btnBuscarFecha")?.addEventListener("click", buscarPorFecha);
-
-    document.getElementById("btnCopiarLink")?.addEventListener("click", () => {
-        const input = document.getElementById("linkReservas");
-        input.select();
-        document.execCommand("copy");
-        alert("Link copiado");
+    btn("btnNuevoTurno", () => {
+        const f = document.getElementById("formTurno");
+        f.style.display = f.style.display === "none" ? "block" : "none";
     });
 });
 
-/* ================= LOGIN ================= */
+function btn(id, fn) {
+    document.getElementById(id)?.addEventListener("click", fn);
+}
 
+/* LOGIN */
 async function login() {
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const username = v("username");
+    const password = v("password");
 
     const { data } = await supabaseClient
         .from("usuarios")
@@ -57,23 +43,20 @@ async function login() {
         .eq("password_hash", password)
         .single();
 
-    if (!data) return alert("Usuario o contraseña incorrectos");
+    if (!data) return alert("Error login");
 
     usuarioActual = data;
 
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
+    hide("login");
+    show("app");
 
-    await cargarConfiguracion();
-    generarLinkReservas();
+    await cargarConfig();
+    generarLink();
     mostrarInicio();
 }
 
-/* ================= CONFIG ================= */
-
-async function cargarConfiguracion() {
-
-    if (!usuarioActual) return;
+/* CONFIG */
+async function cargarConfig() {
 
     const { data } = await supabaseClient
         .from("configuracion")
@@ -83,112 +66,49 @@ async function cargarConfiguracion() {
 
     configuracionActual = data || {};
 
-    document.getElementById("nombreBarberia").value =
-        data?.nombre_barberia || "";
-
-    document.getElementById("precioServicio").value =
-        data?.precio_servicio || 0;
-
-    document.getElementById("tituloBarberia").textContent =
-        data?.nombre_barberia || "BarberOS";
+    set("nombreBarberia", data?.nombre_barberia || "");
+    set("precioServicio", data?.precio_servicio || 0);
 }
 
-async function guardarConfiguracion() {
+async function guardarConfig() {
 
-    const nombreBarberia =
-        document.getElementById("nombreBarberia").value;
-
-    const precioServicio =
-        Number(document.getElementById("precioServicio").value);
-
-    const { error } = await supabaseClient
+    await supabaseClient
         .from("configuracion")
         .upsert({
             usuario_id: usuarioActual.id,
-            nombre_barberia: nombreBarberia,
-            precio_servicio: precioServicio
+            nombre_barberia: v("nombreBarberia"),
+            precio_servicio: Number(v("precioServicio"))
         }, { onConflict: "usuario_id" });
 
-    if (error) {
-        alert("Error al guardar configuración");
-        return;
-    }
-
-    configuracionActual = {
-        nombre_barberia: nombreBarberia,
-        precio_servicio: precioServicio
-    };
-
-    document.getElementById("tituloBarberia").textContent =
-        nombreBarberia;
-
-    generarLinkReservas();
-
-    alert("Configuración guardada");
+    await cargarConfig();
+    generarLink();
+    alert("Guardado");
 }
 
-/* ================= LINK RESERVAS ================= */
-
-function generarLinkReservas() {
-
+/* LINK */
+function generarLink() {
     if (!usuarioActual) return;
 
-    const input = document.getElementById("linkReservas");
-
-    if (!input) return;
-
-    input.value =
-        window.location.origin +
-        "/reservar.html?slug=" +
-        (usuarioActual.slug || usuarioActual.username);
+    set("linkReservas",
+        window.location.origin + "/reservar.html?slug=" + usuarioActual.slug
+    );
 }
 
-/* ================= NAV ================= */
-
-function ocultar() {
-    ["inicio", "agenda", "historial", "configuracion"].forEach(id => {
-        document.getElementById(id).style.display = "none";
-    });
+function copiarLink() {
+    const i = document.getElementById("linkReservas");
+    i.select();
+    document.execCommand("copy");
+    alert("Copiado");
 }
 
-function mostrarInicio() {
-    ocultar();
-    document.getElementById("inicio").style.display = "block";
-    cargarInicio();
-}
-
-function mostrarAgenda() {
-    ocultar();
-    document.getElementById("agenda").style.display = "block";
-    cargarTurnos();
-}
-
-function mostrarHistorial() {
-    ocultar();
-    document.getElementById("historial").style.display = "block";
-    buscarPorFecha();
-}
-
-function mostrarConfiguracion() {
-    ocultar();
-    document.getElementById("configuracion").style.display = "block";
-}
-
-/* ================= TURNOS ================= */
-
+/* TURNOS */
 async function guardarTurno() {
-
-    const cliente = document.getElementById("cliente").value;
-    const fecha = document.getElementById("fecha").value;
-    const hora = document.getElementById("hora").value;
-
-    if (!cliente || !fecha || !hora) return alert("Completa los campos");
 
     await supabaseClient.from("turnos").insert([{
         usuario_id: usuarioActual.id,
-        cliente_nombre: cliente,
-        fecha,
-        hora,
+        cliente_nombre: v("cliente"),
+        fecha: v("fecha"),
+        hora: v("hora"),
         precio: configuracionActual?.precio_servicio || 0,
         estado: "reservado"
     }]);
@@ -197,16 +117,14 @@ async function guardarTurno() {
     cargarInicio();
 }
 
-/* ================= TURNOS LISTA ================= */
-
+/* LISTA */
 async function cargarTurnos() {
 
     const { data } = await supabaseClient
         .from("turnos")
         .select("*")
         .eq("usuario_id", usuarioActual.id)
-        .order("fecha", { ascending: true })
-        .order("hora", { ascending: true });
+        .order("fecha");
 
     const lista = document.getElementById("listaTurnos");
     lista.innerHTML = "";
@@ -214,68 +132,39 @@ async function cargarTurnos() {
     data?.forEach(t => {
 
         lista.innerHTML += `
-        <div class="turno turno-${t.estado}">
-            <div class="turno-hora">${t.hora?.substring(0,5)}</div>
-            <div class="turno-cliente">${t.cliente_nombre}</div>
+        <div class="card turno-${t.estado}">
+            <b>${t.cliente_nombre}</b><br>
+            ${t.fecha} ${t.hora}<br>
+            ${t.estado}
 
-            <span class="estado estado-${t.estado}">
-                ${t.estado}
-            </span>
-
-            <div class="acciones-turno">
-
-                ${t.telefono ? `<button onclick="abrirWhatsApp('${t.telefono}')">WhatsApp</button>` : ""}
-
-                <button onclick="editarTurno(${t.id})">Editar</button>
-                <button onclick="cambiarEstado(${t.id},'completado')">Completar</button>
-                <button onclick="cambiarEstado(${t.id},'cancelado')">Cancelar</button>
-                <button onclick="eliminarTurno(${t.id})">Eliminar</button>
-
+            <div>
+                <button onclick="estado(${t.id},'completado')">✔</button>
+                <button onclick="estado(${t.id},'cancelado')">✖</button>
+                <button onclick="del(${t.id})">🗑</button>
+                ${t.telefono ? `<button onclick="wa('${t.telefono}')">WA</button>` : ""}
             </div>
-        </div>
-        `;
+        </div>`;
     });
 }
 
-/* ================= ESTADOS ================= */
-
-async function cambiarEstado(id, estado) {
-
-    await supabaseClient
-        .from("turnos")
-        .update({ estado })
-        .eq("id", id);
-
+/* ESTADOS */
+async function estado(id, est) {
+    await supabaseClient.from("turnos").update({ estado: est }).eq("id", id);
     cargarTurnos();
     cargarInicio();
 }
 
-async function eliminarTurno(id) {
-
-    await supabaseClient
-        .from("turnos")
-        .delete()
-        .eq("id", id);
-
+async function del(id) {
+    await supabaseClient.from("turnos").delete().eq("id", id);
     cargarTurnos();
     cargarInicio();
 }
 
-async function editarTurno(id) {
-
-    const nuevo = prompt("Nuevo nombre");
-    if (!nuevo) return;
-
-    await supabaseClient
-        .from("turnos")
-        .update({ cliente_nombre: nuevo })
-        .eq("id", id);
-
-    cargarTurnos();
+function wa(t) {
+    window.open("https://wa.me/" + t, "_blank");
 }
 
-/* ================= DASHBOARD ================= */
-
+/* INICIO */
 async function cargarInicio() {
 
     const hoy = new Date().toISOString().split("T")[0];
@@ -287,28 +176,26 @@ async function cargarInicio() {
         .eq("fecha", hoy);
 
     let ocupados = 0;
-    let ganancias = 0;
+    let gan = 0;
 
     data?.forEach(t => {
         if (t.estado !== "cancelado") {
             ocupados++;
-            ganancias += Number(t.precio || 0);
+            gan += Number(t.precio || 0);
         }
     });
 
-    const capacidad = configuracionActual?.capacidad || 20;
+    const cap = configuracionActual?.capacidad || 20;
 
-    document.getElementById("ocupadosHoy").textContent = ocupados;
-    document.getElementById("libresHoy").textContent = Math.max(0, capacidad - ocupados);
-    document.getElementById("gananciasHoy").textContent = ganancias;
+    set("ocupadosHoy", ocupados);
+    set("libresHoy", Math.max(0, cap - ocupados));
+    set("gananciasHoy", gan);
 }
 
-/* ================= HISTORIAL ================= */
+/* HISTORIAL */
+async function buscarHistorial() {
 
-async function buscarPorFecha() {
-
-    const fecha = document.getElementById("fechaBusqueda")?.value;
-    if (!fecha) return;
+    const fecha = v("fechaBusqueda");
 
     const { data } = await supabaseClient
         .from("turnos")
@@ -322,16 +209,23 @@ async function buscarPorFecha() {
     data?.forEach(t => {
         cont.innerHTML += `
         <div class="card">
-            <b>${t.cliente_nombre}</b><br>
-            ${t.hora?.substring(0,5)} - ${t.estado}
-        </div>
-        `;
+            ${t.cliente_nombre}<br>
+            ${t.hora} - ${t.estado}
+        </div>`;
     });
 }
 
-/* ================= WHATSAPP ================= */
+/* HELPERS */
+function v(id){ return document.getElementById(id)?.value }
+function set(id,val){ const e=document.getElementById(id); if(e) e.value=val }
+function show(id){ document.getElementById(id).style.display="block" }
+function hide(id){ document.getElementById(id).style.display="none" }
 
-function abrirWhatsApp(tel) {
-    if (!tel) return;
-    window.open(`https://wa.me/${tel}`, "_blank");
+/* NAV */
+function mostrarInicio(){ hideAll(); show("inicio"); cargarInicio(); }
+function mostrarAgenda(){ hideAll(); show("agenda"); cargarTurnos(); }
+function mostrarHistorial(){ hideAll(); show("historial"); }
+function mostrarConfiguracion(){ hideAll(); show("configuracion"); cargarConfig(); }
+function hideAll(){
+    ["inicio","agenda","historial","configuracion"].forEach(hide);
 }
