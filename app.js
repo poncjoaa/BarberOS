@@ -120,6 +120,8 @@ const duracionTurno =
             precio_servicio: precioServicio
         }, { onConflict: "usuario_id" });
 
+alert("ID usuario: " + usuarioActual.id);
+
 const { error: errorUsuario } = await supabaseClient
     .from("usuarios")
     .update({
@@ -128,6 +130,11 @@ const { error: errorUsuario } = await supabaseClient
         duracion_turno: duracionTurno
     })
     .eq("id", usuarioActual.id);
+
+if (errorUsuario) {
+    alert(JSON.stringify(errorUsuario));
+    return;
+}
 
     if (error) {
         alert("Error al guardar configuración");
