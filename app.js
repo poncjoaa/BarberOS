@@ -457,14 +457,31 @@ async function cargarTurnos() {
     ${turno.hora.substring(0,5)}
 </div>
             <div class="turno-cliente">
-                ${turno.cliente_nombre}
-            </div>
+    ${turno.cliente_nombre}
+</div>
 
-            <span class="estado estado-${turno.estado}">
-                ${turno.estado}
-            </span>
+${turno.telefono ? `
+<div style="
+    margin-bottom:10px;
+    color:#555;
+    font-weight:600;
+">
+    📱 ${turno.telefono}
+</div>
+` : ""}
 
-            <div class="acciones-turno">
+<span class="estado estado-${turno.estado}">
+    ${turno.estado}
+</span>
+
+<div class="acciones-turno">
+
+    ${turno.telefono ? `
+    <button onclick="abrirWhatsApp('${turno.telefono}')">
+        WhatsApp
+    </button>
+    ` : ""}
+
                 <button onclick="editarTurno(${turno.id})">
                     Editar
                 </button>
