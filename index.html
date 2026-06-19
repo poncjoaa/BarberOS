@@ -5,27 +5,15 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="google"
-        content="notranslate"
-    >
+    <meta name="google" content="notranslate">
 
     <title>BarberOS</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
 
-    <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-    >
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -33,277 +21,152 @@
 
 <body>
 
-    <!-- LOGIN -->
+<!-- LOGIN -->
+<div id="login">
 
-    <div id="login">
+    <div class="hero">
+        <h1>BarberOS</h1>
+        <p>Gestión premium para barberías</p>
+    </div>
 
-        <div class="hero">
+    <input type="text" id="username" placeholder="Usuario">
+    <input type="password" id="password" placeholder="Contraseña">
 
-            <h1>BarberOS</h1>
+    <button id="btnIngresar">Ingresar</button>
 
-            <p>
-                Gestión premium para barberías
-            </p>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+
+    <!-- INICIO -->
+    <section id="inicio">
+
+        <div class="hero hero-app">
+            <h1 id="tituloBarberia">BarberOS</h1>
+            <p>Gestión inteligente de turnos</p>
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="card stat-card">
+                <h3>Ocupados</h3>
+                <p id="ocupadosHoy">0</p>
+            </div>
+
+            <div class="card stat-card">
+                <h3>Libres</h3>
+                <p id="libresHoy">0</p>
+            </div>
 
         </div>
 
-        <input
-            type="text"
-            id="username"
-            placeholder="Usuario"
-        >
+        <div class="card ganancias-card">
+            <h3>Ganancias de hoy</h3>
+            <p>$ <span id="gananciasHoy">0</span></p>
+        </div>
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Contraseña"
-        >
+        <div class="card">
+            <h3>Próximos turnos</h3>
+            <div id="proximosTurnos"></div>
+        </div>
 
-        <button id="btnIngresar">
-            Ingresar
+    </section>
+
+    <!-- AGENDA -->
+    <section id="agenda" class="seccion">
+
+        <h2>Agenda</h2>
+
+        <button id="btnNuevoTurno">+ Nuevo turno</button>
+
+        <div id="formTurno" style="display:none;">
+
+            <input type="text" id="cliente" placeholder="Nombre del cliente">
+            <input type="date" id="fecha">
+            <input type="time" id="hora">
+
+            <button id="btnGuardarTurno">Guardar turno</button>
+
+        </div>
+
+        <div id="listaTurnos"></div>
+
+    </section>
+
+    <!-- HISTORIAL -->
+    <section id="historial" class="seccion">
+
+        <h2>Historial</h2>
+
+        <div id="resultadoFecha"></div>
+
+    </section>
+
+    <!-- CONFIGURACIÓN -->
+    <section id="configuracion" class="seccion">
+
+        <h2>Configuración</h2>
+
+        <div class="card">
+
+            <h3>Nombre de la barbería</h3>
+
+            <input type="text" id="nombreBarberia" placeholder="Nombre de la barbería">
+
+            <button id="btnGuardarConfig">Guardar cambios</button>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Precio del servicio</h3>
+
+            <input type="number" id="precioServicio" placeholder="Precio">
+
+        </div>
+
+        <!-- ✅ LINK DE RESERVAS -->
+        <div class="card">
+
+            <h3>Mi link de reservas</h3>
+
+            <input type="text" id="linkReservas" readonly>
+
+            <button id="btnCopiarLink">Copiar link</button>
+
+        </div>
+
+    </section>
+
+    <!-- MENU -->
+    <nav class="menu">
+
+        <button id="btnInicio">
+            <span class="material-symbols-outlined">home</span>
+            <small>Inicio</small>
         </button>
 
-    </div>
+        <button id="btnAgenda">
+            <span class="material-symbols-outlined">calendar_month</span>
+            <small>Agenda</small>
+        </button>
 
-    <!-- APP -->
+        <button id="btnHistorial">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <small>Historial</small>
+        </button>
 
-    <div id="app" style="display:none;">
+        <button id="btnConfiguracion">
+            <span class="material-symbols-outlined">settings</span>
+            <small>Config.</small>
+        </button>
 
-        <!-- INICIO -->
+    </nav>
 
-        <section id="inicio">
+</div>
 
-            <div class="hero hero-app">
-
-                <h1 id="tituloBarberia">
-                    BarberOS
-                </h1>
-
-                <p>
-                    Gestión inteligente de turnos
-                </p>
-
-            </div>
-
-            <div class="stats-grid">
-
-                <div class="card stat-card">
-
-                    <h3>Ocupados</h3>
-
-                    <p id="ocupadosHoy">0</p>
-
-                </div>
-
-                <div class="card stat-card">
-
-                    <h3>Libres</h3>
-
-                    <p id="libresHoy">0</p>
-
-                </div>
-
-            </div>
-
-            <div class="card ganancias-card">
-
-                <h3>Ganancias de hoy</h3>
-
-                <p>
-                    $
-                    <span id="gananciasHoy">0</span>
-                </p>
-
-            </div>
-
-            <div class="card">
-
-                <h3>Próximos turnos</h3>
-
-                <div id="proximosTurnos"></div>
-
-            </div>
-
-        </section>
-
-        <!-- AGENDA -->
-
-        <section
-            id="agenda"
-            class="seccion"
-        >
-
-            <h2>Agenda</h2>
-
-            <button id="btnNuevoTurno">
-                + Nuevo turno
-            </button>
-
-            <div
-                id="formTurno"
-                style="display:none;"
-            >
-
-                <input
-                    type="text"
-                    id="cliente"
-                    placeholder="Nombre del cliente"
-                >
-
-                <input
-                    type="date"
-                    id="fecha"
-                >
-
-                <input
-                    type="time"
-                    id="hora"
-                >
-
-                <button id="btnGuardarTurno">
-                    Guardar turno
-                </button>
-
-            </div>
-
-            <div id="listaTurnos"></div>
-
-        </section>
-
-        <!-- HISTORIAL -->
-
-        <section
-            id="historial"
-            class="seccion"
-        >
-
-            <h2>Historial</h2>
-
-            <div id="resumenSemanal"></div>
-
-            <div class="card">
-
-                <h3>Buscar fecha</h3>
-
-                <input
-                    type="date"
-                    id="fechaBusqueda"
-                >
-
-                <button id="btnBuscarFecha">
-                    Buscar
-                </button>
-
-            </div>
-
-            <div id="resultadoFecha"></div>
-
-            <!-- NECESARIO PARA APP.JS -->
-
-            <div id="listaHistorial"></div>
-
-        </section>
-
-        <!-- CONFIGURACIÓN -->
-
-        <section
-            id="configuracion"
-            class="seccion"
-        >
-
-            <h2>Configuración</h2>
-
-            <div class="card">
-
-                <h3>Nombre de la barbería</h3>
-
-                <input
-                    type="text"
-                    id="nombreBarberia"
-                    placeholder="Nombre de la barbería"
-                >
-
-                <button id="btnGuardarConfig">
-                    Guardar cambios
-                </button>
-
-            </div>
-
-            <div class="card">
-
-                <h3>Precio del servicio</h3>
-
-                <input
-                    type="number"
-                    id="precioServicio"
-                    placeholder="Precio"
-                >
-
-            </div>
-
-        </section>
-
-        <!-- MENU -->
-
-        <nav class="menu">
-
-            <button id="btnInicio">
-
-                <span
-                    class="material-symbols-outlined"
-                    translate="no"
-                >
-                    home
-                </span>
-
-                <small>Inicio</small>
-
-            </button>
-
-            <button id="btnAgenda">
-
-                <span
-                    class="material-symbols-outlined"
-                    translate="no"
-                >
-                    calendar_month
-                </span>
-
-                <small>Agenda</small>
-
-            </button>
-
-            <button id="btnHistorial">
-
-                <span
-                    class="material-symbols-outlined"
-                    translate="no"
-                >
-                    bar_chart
-                </span>
-
-                <small>Historial</small>
-
-            </button>
-
-            <button id="btnConfiguracion">
-
-                <span
-                    class="material-symbols-outlined"
-                    translate="no"
-                >
-                    settings
-                </span>
-
-                <small>Config.</small>
-
-            </button>
-
-        </nav>
-
-    </div>
-
-    <script src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 
