@@ -111,67 +111,65 @@
     </section>
 
     <!-- CONFIGURACIÓN -->
-    <section id="configuracion" class="seccion">
+<section id="configuracion" class="seccion">
 
-        <h2>Configuración</h2>
+    <h2>Configuración</h2>
 
-        <div class="card">
+    <div class="card">
 
-            <h3>Nombre de la barbería</h3>
-            <input type="text" id="nombreBarberia">
+        <h3>Nombre de la barbería</h3>
+        <input type="text" id="nombreBarberia">
 
-            <button id="btnGuardarConfig">Guardar cambios</button>
+        <button id="btnGuardarConfig">Guardar cambios</button>
 
-        </div>
+    </div>
 
-        <div class="card">
+    <div class="card">
 
-            <h3>Precio del servicio</h3>
-<div class="card">
+        <h3>Precio del servicio</h3>
+        <input type="number" id="precioServicio">
 
-    <h3>Horario de apertura</h3>
-    <input type="time" id="horaInicio">
+    </div>
 
-</div>
+    <div class="card">
 
-<div class="card">
+        <h3>Horario de apertura</h3>
+        <input type="time" id="horaInicio">
 
-    <h3>Horario de cierre</h3>
-    <input type="time" id="horaFin">
+    </div>
 
-</div>
+    <div class="card">
 
-<div class="card">
+        <h3>Horario de cierre</h3>
+        <input type="time" id="horaFin">
 
-    <h3>Duración de turnos (minutos)</h3>
+    </div>
 
-    <select id="duracionTurno">
+    <div class="card">
 
-        <option value="15">15 minutos</option>
-        <option value="20">20 minutos</option>
-        <option value="30">30 minutos</option>
-        <option value="45">45 minutos</option>
-        <option value="60">60 minutos</option>
+        <h3>Duración de turnos</h3>
 
-    </select>
+        <select id="duracionTurno">
+            <option value="15">15 minutos</option>
+            <option value="20">20 minutos</option>
+            <option value="30">30 minutos</option>
+            <option value="45">45 minutos</option>
+            <option value="60">60 minutos</option>
+        </select>
 
-</div>
-            <input type="number" id="precioServicio">
+    </div>
 
-        </div>
+    <div class="card">
 
-        <!-- 🔥 LINK DE RESERVAS (FUNCIONAL) -->
-        <div class="card">
+        <h3>Mi link de reservas</h3>
 
-            <h3>Mi link de reservas</h3>
+        <input type="text" id="linkReservas" readonly>
 
-            <input type="text" id="linkReservas" readonly>
+        <button id="btnCopiarLink">Copiar link</button>
 
-            <button id="btnCopiarLink">Copiar link</button>
+    </div>
 
-        </div>
-
-    </section>
+</section>
 
     <!-- MENU -->
     <nav class="menu">
