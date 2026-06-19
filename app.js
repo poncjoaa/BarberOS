@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnInicio")?.addEventListener("click", mostrarInicio);
     document.getElementById("btnAgenda")?.addEventListener("click", mostrarAgenda);
 
+document.getElementById("btnHistorial")?.addEventListener("click", mostrarHistorial);
+
     document.getElementById("btnConfiguracion")?.addEventListener("click", async () => {
         mostrarConfiguracion();
         await cargarConfiguracion();
