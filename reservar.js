@@ -2,7 +2,7 @@ const supabaseUrl =
 "https://jyucjninnzwmycxtncjj.supabase.co";
 
 const supabaseKey =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dWNqbmlubnp3bXljeHRuY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTQ0NzMsImV4cCI6MjA5NzI5MDQ3M30.g8BiPO9wDPoWNk-nki0tRA4OLJn0fZuAqFskg3KEHBk";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
 const supabaseClient =
 supabase.createClient(
@@ -16,176 +16,209 @@ document.addEventListener(
 "DOMContentLoaded",
 async () => {
 
-    await cargarBarberia();
+await cargarBarberia();
 
-    document
-        .getElementById("fecha")
-        .addEventListener(
+const fechaInput =
+    document.getElementById("fecha");
+
+const hoy =
+    new Date()
+        .toISOString()
+        .split("T")[0];
+
+fechaInput.min = hoy;
+
+fechaInput.addEventListener(
+    "change",
+    cargarHorarios
+);
+
+document
+    .querySelectorAll(
+        "#fecha,#hora,#telefono,#nombre"
+    )
+    .forEach(campo => {
+
+        campo.addEventListener(
+            "input",
+            validarFormulario
+        );
+
+        campo.addEventListener(
             "change",
-            cargarHorarios
+            validarFormulario
         );
+    });
 
-    document
-        .querySelectorAll(
-            "#fecha,#hora,#telefono,#nombre"
-        )
-        .forEach(campo => {
+document
+    .getElementById(
+        "btnReservar"
+    )
+    .addEventListener(
+        "click",
+        reservarTurno
+    );
 
-            campo.addEventListener(
-                "input",
-                validarFormulario
-            );
-
-            campo.addEventListener(
-                "change",
-                validarFormulario
-            );
-        });
-
-    document
-        .getElementById(
-            "btnReservar"
-        )
-        .addEventListener(
-            "click",
-            reservarTurno
-        );
 }
-
 );
 
 async function cargarBarberia() {
 
 const slug =
-    new URLSearchParams(
-        window.location.search
-    ).get("slug");
+new URLSearchParams(
+window.location.search
+).get("slug");
 
 if (!slug) {
 
-    alert(
-        "Barbería no encontrada"
-    );
+alert(
+    "Barbería no encontrada"
+);
 
-    return;
+return;
+
 }
 
 const {
-    data,
-    error
+data,
+error
 } =
-    await supabaseClient
-        .from("usuarios")
-        .select("*")
-        .eq("slug", slug)
-        .single();
+await supabaseClient
+.from("usuarios")
+.select("*")
+.eq("slug", slug)
+.single();
 
 if (error || !data) {
 
-    alert(
-        "Barbería no encontrada"
-    );
+alert(
+    "Barbería no encontrada"
+);
 
-    return;
+return;
+
 }
 
 barberia = data;
 
 document.getElementById(
-    "nombreBarberia"
+"nombreBarberia"
 ).textContent =
-    barberia.nombre_barberia;
+barberia.nombre_barberia;
 
 }
 
 async function cargarHorarios() {
 
 const fecha =
-    document.getElementById(
-        "fecha"
-    ).value;
+document.getElementById(
+"fecha"
+).value;
 
 if (!fecha || !barberia)
-    return;
+return;
 
 const selector =
-    document.getElementById(
-        "hora"
-    );
+document.getElementById(
+"hora"
+);
 
 selector.innerHTML =
-    `
-    <option value="">
-        Seleccionar horario
-    </option>
-`;
+`
 
-const {
-    data: turnos
+<option value="">
+    Seleccionar horario
+</option>
+`;const {
+data: turnos
 } =
-    await supabaseClient
-        .from("turnos")
-        .select("hora")
-        .eq(
-            "usuario_id",
-            barberia.id
-        )
-        .eq(
-            "fecha",
-            fecha
-        )
-        .neq(
-            "estado",
-            "cancelado"
-        );
+await supabaseClient
+.from("turnos")
+.select("hora")
+.eq(
+"usuario_id",
+barberia.id
+)
+.eq(
+"fecha",
+fecha
+)
+.neq(
+"estado",
+"cancelado"
+);
 
 const ocupados =
-    (turnos || [])
-    .map(t =>
-        t.hora.substring(0,5)
-    );
+(turnos || [])
+.map(t =>
+t.hora.substring(0,5)
+);
+
+const hoy =
+new Date()
+.toISOString()
+.split("T")[0];
+
+const ahora =
+new Date();
+
+const minutosActuales =
+ahora.getHours() * 60 +
+ahora.getMinutes();
 
 let actual =
-    convertirMinutos(
-        barberia.hora_inicio
-    );
+convertirMinutos(
+barberia.hora_inicio
+);
 
 const fin =
-    convertirMinutos(
-        barberia.hora_fin
-    );
+convertirMinutos(
+barberia.hora_fin
+);
 
 while (actual < fin) {
 
-    const horario =
-        formatearHora(
-            actual
-        );
+const horario =
+    formatearHora(
+        actual
+    );
 
-    if (
-        !ocupados.includes(
-            horario
-        )
-    ) {
-
-        const option =
-            document.createElement(
-                "option"
-            );
-
-        option.value =
-            horario;
-
-        option.textContent =
-            horario;
-
-        selector.appendChild(
-            option
-        );
-    }
+if (
+    fecha === hoy &&
+    actual <= minutosActuales
+) {
 
     actual +=
         barberia.duracion_turno;
+
+    continue;
+}
+
+if (
+    !ocupados.includes(
+        horario
+    )
+) {
+
+    const option =
+        document.createElement(
+            "option"
+        );
+
+    option.value =
+        horario;
+
+    option.textContent =
+        horario;
+
+    selector.appendChild(
+        option
+    );
+}
+
+actual +=
+    barberia.duracion_turno;
+
 }
 
 }
@@ -195,12 +228,12 @@ hora
 ) {
 
 const partes =
-    hora.split(":");
+hora.split(":");
 
 return (
-    Number(partes[0]) *
-    60 +
-    Number(partes[1])
+Number(partes[0]) *
+60 +
+Number(partes[1])
 );
 
 }
@@ -210,19 +243,19 @@ minutos
 ) {
 
 const horas =
-    Math.floor(
-        minutos / 60
-    );
+Math.floor(
+minutos / 60
+);
 
 const mins =
-    minutos % 60;
+minutos % 60;
 
 return (
-    String(horas)
-        .padStart(2,"0") +
-    ":" +
-    String(mins)
-        .padStart(2,"0")
+String(horas)
+.padStart(2,"0") +
+":" +
+String(mins)
+.padStart(2,"0")
 );
 
 }
@@ -230,161 +263,161 @@ return (
 function validarFormulario() {
 
 const fecha =
-    document.getElementById(
-        "fecha"
-    ).value;
+document.getElementById(
+"fecha"
+).value;
 
 const hora =
-    document.getElementById(
-        "hora"
-    ).value;
+document.getElementById(
+"hora"
+).value;
 
 const telefono =
-    document.getElementById(
-        "telefono"
-    ).value;
+document.getElementById(
+"telefono"
+).value;
 
 const nombre =
-    document.getElementById(
-        "nombre"
-    ).value;
+document.getElementById(
+"nombre"
+).value;
 
 document.getElementById(
-    "btnReservar"
+"btnReservar"
 ).style.display =
 
-    fecha &&
-    hora &&
-    telefono &&
-    nombre
+fecha &&
+hora &&
+telefono &&
+nombre
 
-        ? "block"
-        : "none";
+    ? "block"
+    : "none";
 
 }
 
 async function reservarTurno() {
 
 const fecha =
-    document.getElementById(
-        "fecha"
-    ).value;
+document.getElementById(
+"fecha"
+).value;
 
 const hora =
-    document.getElementById(
-        "hora"
-    ).value;
+document.getElementById(
+"hora"
+).value;
 
 const telefono =
-    document.getElementById(
-        "telefono"
-    ).value;
+document.getElementById(
+"telefono"
+).value;
 
 const nombre =
-    document.getElementById(
-        "nombre"
-    ).value;
+document.getElementById(
+"nombre"
+).value;
 
 const {
-    data: existente
+data: existente
 } =
-    await supabaseClient
-        .from("turnos")
-        .select("id")
-        .eq(
-            "usuario_id",
-            barberia.id
-        )
-        .eq(
-            "fecha",
-            fecha
-        )
-        .eq(
-            "hora",
-            hora + ":00"
-        )
-        .neq(
-            "estado",
-            "cancelado"
-        );
+await supabaseClient
+.from("turnos")
+.select("id")
+.eq(
+"usuario_id",
+barberia.id
+)
+.eq(
+"fecha",
+fecha
+)
+.eq(
+"hora",
+hora + ":00"
+)
+.neq(
+"estado",
+"cancelado"
+);
 
 if (
-    existente &&
-    existente.length > 0
+existente &&
+existente.length > 0
 ) {
 
-    alert(
-        "Ese horario ya fue reservado"
-    );
+alert(
+    "Ese horario ya fue reservado"
+);
 
-    await cargarHorarios();
+await cargarHorarios();
 
-    return;
+return;
+
 }
 
 const { error } =
-    await supabaseClient
-        .from("turnos")
-        .insert([
-            {
-                usuario_id:
-                    barberia.id,
+await supabaseClient
+.from("turnos")
+.insert([
+{
+usuario_id:
+barberia.id,
 
-                fecha,
+            fecha,
 
-                hora:
-                    hora + ":00",
+            hora:
+                hora + ":00",
 
-                cliente_nombre:
-                    nombre,
+            cliente_nombre:
+                nombre,
 
-                telefono,
+            telefono,
 
-                servicio_id: 1,
+            servicio_id: 1,
 
-                precio: 5000,
+            precio: 5000,
 
-                estado:
-                    "reservado"
-            }
-        ]);
+            estado:
+                "reservado"
+        }
+    ]);
 
 if (error) {
 
-    alert(
-        "Error al reservar"
-    );
+alert(
+    "Error al reservar"
+);
 
-    return;
+return;
+
 }
 
 document.querySelector(
-    ".card"
+".card"
 ).style.display =
-    "none";
+"none";
 
 const mensaje =
-    document.getElementById(
-        "mensaje"
-    );
+document.getElementById(
+"mensaje"
+);
 
 mensaje.style.display =
-    "block";
+"block";
 
 mensaje.innerHTML = `
-    <h2>
-        ✅ Turno reservado
-    </h2>
 
-    <p style="
-        font-size:18px;
-        color:#111;
-        margin-top:15px;
-    ">
-        ${nombre}<br><br>
-        ${fecha}<br>
-        ${hora}
-    </p>
+<h2>
+    ✅ Turno reservado
+</h2><p style="
+    font-size:18px;
+    color:#111;
+    margin-top:15px;
+">
+    ${nombre}<br><br>
+    ${fecha}<br>
+    ${hora}
+</p>
 `;
-
 }
