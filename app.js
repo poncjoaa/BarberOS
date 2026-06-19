@@ -17,8 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnIngresar")?.addEventListener("click", login);
     document.getElementById("btnInicio")?.addEventListener("click", mostrarInicio);
     document.getElementById("btnAgenda")?.addEventListener("click", mostrarAgenda);
-    document.getElementById("btnHistorial")?.addEventListener("click", mostrarHistorial);
-    document.getElementById("btnConfiguracion")?.addEventListener("click", mostrarConfiguracion);
+
+document.getElementById("btnConfiguracion")?.addEventListener("click", async () => {
+    mostrarConfiguracion();
+    await cargarConfiguracion(); // 🔥 IMPORTANTE
+});
 
     document.getElementById("btnGuardarTurno")?.addEventListener("click", guardarTurno);
     document.getElementById("btnGuardarConfig")?.addEventListener("click", guardarConfiguracion);
@@ -61,34 +64,42 @@ async function login() {
 
 async function cargarConfiguracion() {
 
-    const { data } = await supabaseClient
+    if (!usuarioActual) return;
+
+    const { data, error } = await supabaseClient
         .from("configuracion")
         .select("*")
         .eq("usuario_id", usuarioActual.id)
-        .single();
+        .maybeSingle(); // 🔥 IMPORTANTE (evita crash)
 
-    if (!data) return;
+    if (error) {
+        console.log("Error config:", error);
+        return;
+    }
 
-    configuracionActual = data;
+    configuracionActual = data || null;
 
     const nombre = document.getElementById("nombreBarberia");
     const precio = document.getElementById("precioServicio");
 
-    if (nombre) nombre.value = data.nombre_barberia ?? "";
+    if (nombre) nombre.value = data?.nombre_barberia || "";
+    if (precio) precio.value = data?.precio_servicio || "";
 
-    if (precio) precio.value = data.precio_servicio ?? 0;
-
-    // actualizar título
     const titulo = document.getElementById("tituloBarberia");
-    if (titulo && data.nombre_barberia) {
+    if (titulo && data?.nombre_barberia) {
         titulo.textContent = data.nombre_barberia;
     }
 }
 
 async function guardarConfiguracion() {
 
-    const nombreBarberia = document.getElementById("nombreBarberia").value;
-    const precioServicio = Number(document.getElementById("precioServicio").value || 0);
+    if (!usuarioActual) {
+        alert("No hay usuario logueado");
+        return;
+    }
+
+    const nombreBarberia = document.getElementById("nombreBarberia")?.value || "";
+    const precioServicio = Number(document.getElementById("precioServicio")?.value || 0);
 
     const { error } = await supabaseClient
         .from("configuracion")
@@ -96,9 +107,12 @@ async function guardarConfiguracion() {
             usuario_id: usuarioActual.id,
             nombre_barberia: nombreBarberia,
             precio_servicio: precioServicio
+        }, {
+            onConflict: "usuario_id"
         });
 
     if (error) {
+        console.log(error);
         alert("Error al guardar configuración");
         return;
     }
@@ -108,11 +122,9 @@ async function guardarConfiguracion() {
         precio_servicio: precioServicio
     };
 
-    // actualizar UI inmediatamente
-    const titulo = document.getElementById("tituloBarberia");
-    if (titulo) titulo.textContent = nombreBarberia;
+    document.getElementById("tituloBarberia").textContent = nombreBarberia;
 
-    alert("Configuración guardada correctamente");
+    alert("Configuración guardada");
 }
 
 /* ================= NAV ================= */
