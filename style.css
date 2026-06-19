@@ -89,6 +89,28 @@ font-weight:600;
 
 }
 
+select{
+
+width:100%;
+
+padding:15px;
+
+border:2px solid #e5e7eb;
+
+border-radius:16px;
+
+margin-bottom:12px;
+
+font-size:16px;
+
+background:#ffffff;
+
+outline:none;
+
+font-weight:600;
+
+}
+
 /* BOTONES */
 
 button{
