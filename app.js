@@ -103,6 +103,15 @@ async function guardarConfiguracion() {
     const precioServicio =
         Number(document.getElementById("precioServicio").value);
 
+const horaInicio =
+    document.getElementById("horaInicio").value;
+
+const horaFin =
+    document.getElementById("horaFin").value;
+
+const duracionTurno =
+    Number(document.getElementById("duracionTurno").value);
+
     const { error } = await supabaseClient
         .from("configuracion")
         .upsert({
@@ -111,10 +120,24 @@ async function guardarConfiguracion() {
             precio_servicio: precioServicio
         }, { onConflict: "usuario_id" });
 
+const { error: errorUsuario } = await supabaseClient
+    .from("usuarios")
+    .update({
+        hora_inicio: horaInicio,
+        hora_fin: horaFin,
+        duracion_turno: duracionTurno
+    })
+    .eq("id", usuarioActual.id);
+
     if (error) {
         alert("Error al guardar configuración");
         return;
     }
+
+if (errorUsuario) {
+    alert("Error al guardar horarios");
+    return;
+}
 
     configuracionActual = {
         nombre_barberia: nombreBarberia,
