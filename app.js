@@ -572,6 +572,23 @@ async function editarTurno(id) {
     cargarTurnos();
 }
 
+function abrirWhatsApp(telefono) {
+
+    let numero = telefono
+        .replace(/\D/g, "");
+
+    if (!numero.startsWith("54")) {
+
+        numero =
+            "54" + numero;
+    }
+
+    window.open(
+        `https://wa.me/${numero}`,
+        "_blank"
+    );
+}
+
 /* ================= DASHBOARD ================= */
 
 async function cargarInicio() {
