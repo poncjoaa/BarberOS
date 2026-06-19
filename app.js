@@ -5,10 +5,7 @@ const supabaseKey =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5dWNqbmlubnp3bXljeHRuY2pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTQ0NzMsImV4cCI6MjA5NzI5MDQ3M30.g8BiPO9wDPoWNk-nki0tRA4OLJn0fZuAqFskg3KEHBk";
 
 const supabaseClient =
-    supabase.createClient(
-        supabaseUrl,
-        supabaseKey
-    );
+    supabase.createClient(supabaseUrl, supabaseKey);
 
 let usuarioActual = null;
 let configuracionActual = null;
@@ -17,64 +14,29 @@ let configuracionActual = null;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    document
-        .getElementById("btnIngresar")
-        ?.addEventListener("click", login);
+    document.getElementById("btnIngresar")?.addEventListener("click", login);
+    document.getElementById("btnInicio")?.addEventListener("click", mostrarInicio);
+    document.getElementById("btnAgenda")?.addEventListener("click", mostrarAgenda);
+    document.getElementById("btnHistorial")?.addEventListener("click", mostrarHistorial);
+    document.getElementById("btnConfiguracion")?.addEventListener("click", mostrarConfiguracion);
+    document.getElementById("btnGuardarTurno")?.addEventListener("click", guardarTurno);
+    document.getElementById("btnGuardarConfig")?.addEventListener("click", guardarConfiguracion);
 
-    document
-        .getElementById("btnInicio")
-        ?.addEventListener("click", mostrarInicio);
+    document.getElementById("btnNuevoTurno")?.addEventListener("click", () => {
+        const form = document.getElementById("formTurno");
+        if (!form) return;
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    });
 
-    document
-        .getElementById("btnAgenda")
-        ?.addEventListener("click", mostrarAgenda);
-
-    document
-        .getElementById("btnHistorial")
-        ?.addEventListener("click", mostrarHistorial);
-
-    document
-        .getElementById("btnConfiguracion")
-        ?.addEventListener("click", mostrarConfiguracion);
-
-    document
-        .getElementById("btnGuardarTurno")
-        ?.addEventListener("click", guardarTurno);
-
-    document
-        .getElementById("btnGuardarConfig")
-        ?.addEventListener("click", guardarConfiguracion);
-
-    document
-        .getElementById("btnNuevoTurno")
-        ?.addEventListener("click", () => {
-
-            const form =
-                document.getElementById("formTurno");
-
-            if (!form) return;
-
-            form.style.display =
-                form.style.display === "none"
-                    ? "block"
-                    : "none";
-        });
-
-    /* BOTÓN COPIAR LINK */
-    document
-        .getElementById("btnCopiarLink")
-        ?.addEventListener("click", copiarLinkReservas);
+    document.getElementById("btnCopiarLink")?.addEventListener("click", copiarLinkReservas);
 });
 
 /* ================= LOGIN ================= */
 
 async function login() {
 
-    const username =
-        document.getElementById("username").value;
-
-    const password =
-        document.getElementById("password").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
     const { data, error } =
         await supabaseClient
@@ -85,7 +47,6 @@ async function login() {
             .single();
 
     if (error || !data) {
-
         alert("Usuario o contraseña incorrectos");
         return;
     }
@@ -116,20 +77,14 @@ async function cargarConfiguracion() {
 
     configuracionActual = data;
 
-    const nombre =
-        document.getElementById("nombreBarberia");
+    document.getElementById("nombreBarberia").value =
+        data.nombre_barberia || "";
 
-    const precio =
-        document.getElementById("precioServicio");
-
-    if (nombre)
-        nombre.value = data.nombre_barberia || "";
-
-    if (precio)
-        precio.value = data.precio_servicio || "";
+    document.getElementById("precioServicio").value =
+        data.precio_servicio || "";
 
     document.getElementById("tituloBarberia").textContent =
-        data.nombre_barberia || "BarberOS";
+        data.nombre_barberia;
 
     cargarLinkReservas();
 }
@@ -173,8 +128,7 @@ async function guardarConfiguracion() {
 
 function cargarLinkReservas() {
 
-    const input =
-        document.getElementById("linkReservas");
+    const input = document.getElementById("linkReservas");
 
     if (!input || !usuarioActual?.slug) return;
 
@@ -184,8 +138,7 @@ function cargarLinkReservas() {
 
 function copiarLinkReservas() {
 
-    const input =
-        document.getElementById("linkReservas");
+    const input = document.getElementById("linkReservas");
 
     if (!input) return;
 
@@ -194,10 +147,9 @@ function copiarLinkReservas() {
     alert("Link copiado");
 }
 
-/* ================= NAVEGACION ================= */
+/* ================= NAV ================= */
 
 function ocultarSecciones() {
-
     document.getElementById("inicio").style.display = "none";
     document.getElementById("agenda").style.display = "none";
     document.getElementById("historial").style.display = "none";
@@ -240,9 +192,8 @@ async function guardarTurno() {
         return;
     }
 
-    const { error } = await supabaseClient
-        .from("turnos")
-        .insert([{
+    const { error } =
+        await supabaseClient.from("turnos").insert([{
             usuario_id: usuarioActual.id,
             fecha,
             hora,
@@ -265,7 +216,7 @@ async function guardarTurno() {
     cargarInicio();
 }
 
-/* ================= TURNOS LISTA ================= */
+/* ================= LISTA TURNOS ================= */
 
 async function cargarTurnos() {
 
@@ -287,34 +238,15 @@ async function cargarTurnos() {
     turnos.forEach(turno => {
 
         const div = document.createElement("div");
-        div.className = `turno`;
+        div.className = "turno";
 
         div.innerHTML = `
             <div class="turno-hora">${turno.hora.substring(0,5)}</div>
             <div class="turno-cliente">${turno.cliente_nombre}</div>
-
-            <div class="acciones-turno">
-                <button onclick="abrirWhatsApp('${turno.telefono || ''}')">WhatsApp</button>
-            </div>
         `;
 
         lista.appendChild(div);
     });
-}
-
-/* ================= WHATSAPP ================= */
-
-function abrirWhatsApp(telefono) {
-
-    if (!telefono) return;
-
-    let numero = telefono.replace(/\D/g, "");
-
-    if (!numero.startsWith("54")) {
-        numero = "54" + numero;
-    }
-
-    window.open(`https://wa.me/${numero}`, "_blank");
 }
 
 /* ================= DASHBOARD ================= */
