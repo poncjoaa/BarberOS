@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnAgenda")?.addEventListener("click", mostrarAgenda);
     document.getElementById("btnHistorial")?.addEventListener("click", mostrarHistorial);
     document.getElementById("btnConfiguracion")?.addEventListener("click", mostrarConfiguracion);
+
     document.getElementById("btnGuardarTurno")?.addEventListener("click", guardarTurno);
     document.getElementById("btnGuardarConfig")?.addEventListener("click", guardarConfiguracion);
 
@@ -66,13 +67,19 @@ async function cargarConfiguracion() {
         .eq("usuario_id", usuarioActual.id)
         .single();
 
-    if (data) configuracionActual = data;
+    configuracionActual = data || {};
 
     const nombre = document.getElementById("nombreBarberia");
     const precio = document.getElementById("precioServicio");
+    const link = document.getElementById("linkReservas");
 
     if (nombre) nombre.value = data?.nombre_barberia || "";
     if (precio) precio.value = data?.precio_servicio || 0;
+
+    /* LINK DE RESERVA */
+    if (link && usuarioActual?.slug) {
+        link.value = `${window.location.origin}/reservar.html?slug=${usuarioActual.slug}`;
+    }
 }
 
 async function guardarConfiguracion() {
@@ -90,12 +97,15 @@ async function guardarConfiguracion() {
 
     if (error) return alert("Error al guardar");
 
-    configuracionActual = { nombre_barberia: nombre, precio_servicio: precio };
+    configuracionActual = {
+        nombre_barberia: nombre,
+        precio_servicio: precio
+    };
 
-    alert("Guardado");
+    alert("Configuración guardada");
 }
 
-/* ================= NAVEGACION ================= */
+/* ================= NAV ================= */
 
 function ocultar() {
     ["inicio", "agenda", "historial", "configuracion"].forEach(id => {
@@ -134,52 +144,53 @@ async function guardarTurno() {
     const fecha = document.getElementById("fecha").value;
     const hora = document.getElementById("hora").value;
 
-    const { error } = await supabaseClient
-        .from("turnos")
-        .insert([{
-            usuario_id: usuarioActual.id,
-            cliente_nombre: cliente,
-            fecha,
-            hora,
-            precio: configuracionActual?.precio_servicio || 0,
-            estado: "reservado"
-        }]);
+    if (!cliente || !fecha || !hora) return alert("Completa los campos");
 
-    if (error) return alert("Error");
+    await supabaseClient.from("turnos").insert([{
+        usuario_id: usuarioActual.id,
+        cliente_nombre: cliente,
+        fecha,
+        hora,
+        precio: configuracionActual?.precio_servicio || 0,
+        estado: "reservado"
+    }]);
 
     cargarTurnos();
     cargarInicio();
 }
 
-/* ================= LISTA TURNOS ================= */
+/* ================= TURNOS LISTA ================= */
 
 async function cargarTurnos() {
 
-    const { data: turnos } = await supabaseClient
+    const { data } = await supabaseClient
         .from("turnos")
         .select("*")
         .eq("usuario_id", usuarioActual.id)
-        .order("fecha");
+        .order("fecha", { ascending: true })
+        .order("hora", { ascending: true });
 
     const lista = document.getElementById("listaTurnos");
     lista.innerHTML = "";
 
-    turnos?.forEach(t => {
+    data?.forEach(t => {
 
         lista.innerHTML += `
-        <div class="turno">
+        <div class="turno turno-${t.estado}">
+            
             <div class="turno-hora">${t.hora?.substring(0,5)}</div>
             <div class="turno-cliente">${t.cliente_nombre}</div>
 
-            <span class="estado">${t.estado}</span>
+            <span class="estado estado-${t.estado}">
+                ${t.estado}
+            </span>
 
             <div class="acciones-turno">
 
                 <button onclick="abrirWhatsApp('${t.telefono || ''}')">WhatsApp</button>
-
                 <button onclick="editarTurno(${t.id})">Editar</button>
-                <button onclick="completarTurno(${t.id})">Completar</button>
-                <button onclick="cancelarTurno(${t.id})">Cancelar</button>
+                <button onclick="cambiarEstado(${t.id},'completado')">Completar</button>
+                <button onclick="cambiarEstado(${t.id},'cancelado')">Cancelar</button>
                 <button onclick="eliminarTurno(${t.id})">Eliminar</button>
 
             </div>
@@ -188,37 +199,38 @@ async function cargarTurnos() {
     });
 }
 
-/* ================= ACCIONES ================= */
+/* ================= ESTADOS ================= */
 
-async function completarTurno(id) {
-    await supabaseClient.from("turnos").update({ estado: "completado" }).eq("id", id);
-    cargarTurnos();
-}
+async function cambiarEstado(id, estado) {
+    await supabaseClient
+        .from("turnos")
+        .update({ estado })
+        .eq("id", id);
 
-async function cancelarTurno(id) {
-    await supabaseClient.from("turnos").update({ estado: "cancelado" }).eq("id", id);
     cargarTurnos();
+    cargarInicio();
 }
 
 async function eliminarTurno(id) {
-    await supabaseClient.from("turnos").delete().eq("id", id);
+    await supabaseClient
+        .from("turnos")
+        .delete()
+        .eq("id", id);
+
     cargarTurnos();
+    cargarInicio();
 }
 
 async function editarTurno(id) {
     const nuevo = prompt("Nuevo nombre");
     if (!nuevo) return;
 
-    await supabaseClient.from("turnos")
+    await supabaseClient
+        .from("turnos")
         .update({ cliente_nombre: nuevo })
         .eq("id", id);
 
     cargarTurnos();
-}
-
-function abrirWhatsApp(tel) {
-    if (!tel) return;
-    window.open(`https://wa.me/${tel}`, "_blank");
 }
 
 /* ================= DASHBOARD ================= */
@@ -227,7 +239,7 @@ async function cargarInicio() {
 
     const hoy = new Date().toISOString().split("T")[0];
 
-    const { data: turnos } = await supabaseClient
+    const { data } = await supabaseClient
         .from("turnos")
         .select("*")
         .eq("usuario_id", usuarioActual.id)
@@ -236,14 +248,17 @@ async function cargarInicio() {
     let ocupados = 0;
     let ganancias = 0;
 
-    turnos?.forEach(t => {
+    data?.forEach(t => {
         if (t.estado !== "cancelado") {
             ocupados++;
             ganancias += Number(t.precio || 0);
         }
     });
 
+    const capacidad = configuracionActual?.capacidad || 20;
+
     document.getElementById("ocupadosHoy").textContent = ocupados;
+    document.getElementById("libresHoy").textContent = Math.max(0, capacidad - ocupados);
     document.getElementById("gananciasHoy").textContent = ganancias;
 }
 
@@ -252,23 +267,29 @@ async function cargarInicio() {
 async function buscarPorFecha() {
 
     const fecha = document.getElementById("fechaBusqueda")?.value;
-    if (!fecha) return;
 
     const { data } = await supabaseClient
         .from("turnos")
         .select("*")
         .eq("usuario_id", usuarioActual.id)
-        .eq("fecha", fecha);
+        .eq("fecha", fecha || "");
 
     const cont = document.getElementById("resultadoFecha");
     cont.innerHTML = "";
 
     data?.forEach(t => {
         cont.innerHTML += `
-            <div class="card">
-                <b>${t.cliente_nombre}</b><br>
-                ${t.hora?.substring(0,5)} - ${t.estado}
-            </div>
+        <div class="card">
+            <b>${t.cliente_nombre}</b><br>
+            ${t.hora?.substring(0,5)} - ${t.estado}
+        </div>
         `;
     });
+}
+
+/* ================= WHATSAPP ================= */
+
+function abrirWhatsApp(tel) {
+    if (!tel) return;
+    window.open(`https://wa.me/${tel}`, "_blank");
 }
