@@ -139,6 +139,10 @@ if (errorUsuario) {
     return;
 }
 
+usuarioActual.hora_inicio = horaInicio;
+usuarioActual.hora_fin = horaFin;
+usuarioActual.duracion_turno = duracionTurno;
+
     configuracionActual = {
         nombre_barberia: nombreBarberia,
         precio_servicio: precioServicio
@@ -150,15 +154,6 @@ if (errorUsuario) {
     generarLinkReservas();
 
     alert("Configuración guardada");
-
-document.getElementById("horaInicio").value =
-    usuarioActual?.hora_inicio || "09:00";
-
-document.getElementById("horaFin").value =
-    usuarioActual?.hora_fin || "20:00";
-
-document.getElementById("duracionTurno").value =
-    usuarioActual?.duracion_turno || 30;
 
 }
 
