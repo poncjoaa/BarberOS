@@ -127,6 +127,16 @@ async function guardarConfiguracion() {
     generarLinkReservas();
 
     alert("Configuración guardada");
+
+document.getElementById("horaInicio").value =
+    usuarioActual?.hora_inicio || "09:00";
+
+document.getElementById("horaFin").value =
+    usuarioActual?.hora_fin || "20:00";
+
+document.getElementById("duracionTurno").value =
+    usuarioActual?.duracion_turno || 30;
+
 }
 
 /* ================= LINK RESERVAS ================= */
