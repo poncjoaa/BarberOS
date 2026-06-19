@@ -13,6 +13,8 @@ const supabaseClient =
 let usuarioActual = null;
 let configuracionActual = null;
 
+/* ================= INIT ================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
     document
@@ -57,6 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? "block"
                     : "none";
         });
+
+    /* BOTÓN COPIAR LINK */
+    document
+        .getElementById("btnCopiarLink")
+        ?.addEventListener("click", copiarLinkReservas);
 });
 
 /* ================= LOGIN ================= */
@@ -79,22 +86,14 @@ async function login() {
 
     if (error || !data) {
 
-        alert(
-            "Usuario o contraseña incorrectos"
-        );
-
+        alert("Usuario o contraseña incorrectos");
         return;
     }
 
     usuarioActual = data;
 
-    document.getElementById(
-        "login"
-    ).style.display = "none";
-
-    document.getElementById(
-        "app"
-    ).style.display = "block";
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
 
     await cargarConfiguracion();
     await cargarInicio();
@@ -110,10 +109,7 @@ async function cargarConfiguracion() {
         await supabaseClient
             .from("configuracion")
             .select("*")
-            .eq(
-                "usuario_id",
-                usuarioActual.id
-            )
+            .eq("usuario_id", usuarioActual.id)
             .single();
 
     if (!data) return;
@@ -121,382 +117,184 @@ async function cargarConfiguracion() {
     configuracionActual = data;
 
     const nombre =
-        document.getElementById(
-            "nombreBarberia"
-        );
+        document.getElementById("nombreBarberia");
 
     const precio =
-        document.getElementById(
-            "precioServicio"
-        );
+        document.getElementById("precioServicio");
 
     if (nombre)
-        nombre.value =
-            data.nombre_barberia || "";
+        nombre.value = data.nombre_barberia || "";
 
     if (precio)
-        precio.value =
-            data.precio_servicio || "";
+        precio.value = data.precio_servicio || "";
 
-    if (data.nombre_barberia) {
+    document.getElementById("tituloBarberia").textContent =
+        data.nombre_barberia || "BarberOS";
 
-        document.getElementById(
-            "tituloBarberia"
-        ).textContent =
-            data.nombre_barberia;
-    }
+    cargarLinkReservas();
 }
 
 async function guardarConfiguracion() {
 
     const nombreBarberia =
-        document.getElementById(
-            "nombreBarberia"
-        ).value;
+        document.getElementById("nombreBarberia").value;
 
     const precioServicio =
-        Number(
-            document.getElementById(
-                "precioServicio"
-            ).value
-        );
+        Number(document.getElementById("precioServicio").value);
 
     const { error } =
         await supabaseClient
             .from("configuracion")
             .upsert({
-                usuario_id:
-                    usuarioActual.id,
-                nombre_barberia:
-                    nombreBarberia,
-                precio_servicio:
-                    precioServicio
+                usuario_id: usuarioActual.id,
+                nombre_barberia: nombreBarberia,
+                precio_servicio: precioServicio
             });
 
     if (error) {
-
-        alert(
-            "Error al guardar configuración"
-        );
-
+        alert("Error al guardar configuración");
         return;
     }
 
     configuracionActual = {
-        nombre_barberia:
-            nombreBarberia,
-        precio_servicio:
-            precioServicio
+        nombre_barberia: nombreBarberia,
+        precio_servicio: precioServicio
     };
 
-    document.getElementById(
-        "tituloBarberia"
-    ).textContent =
+    document.getElementById("tituloBarberia").textContent =
         nombreBarberia;
 
+    cargarLinkReservas();
+
     alert("Configuración guardada");
+}
+
+/* ================= LINK RESERVAS ================= */
+
+function cargarLinkReservas() {
+
+    const input =
+        document.getElementById("linkReservas");
+
+    if (!input || !usuarioActual?.slug) return;
+
+    input.value =
+        `${window.location.origin}/reservar.html?slug=${usuarioActual.slug}`;
+}
+
+function copiarLinkReservas() {
+
+    const input =
+        document.getElementById("linkReservas");
+
+    if (!input) return;
+
+    navigator.clipboard.writeText(input.value);
+
+    alert("Link copiado");
 }
 
 /* ================= NAVEGACION ================= */
 
 function ocultarSecciones() {
 
-    document.getElementById(
-        "inicio"
-    ).style.display = "none";
-
-    document.getElementById(
-        "agenda"
-    ).style.display = "none";
-
-    document.getElementById(
-        "historial"
-    ).style.display = "none";
-
-    document.getElementById(
-        "configuracion"
-    ).style.display = "none";
+    document.getElementById("inicio").style.display = "none";
+    document.getElementById("agenda").style.display = "none";
+    document.getElementById("historial").style.display = "none";
+    document.getElementById("configuracion").style.display = "none";
 }
 
 function mostrarInicio() {
-
     ocultarSecciones();
-
-    document.getElementById(
-        "inicio"
-    ).style.display = "block";
-
-    activarBoton(
-        "btnInicio"
-    );
-
+    document.getElementById("inicio").style.display = "block";
     cargarInicio();
 }
 
 function mostrarAgenda() {
-
     ocultarSecciones();
-
-    document.getElementById(
-        "agenda"
-    ).style.display = "block";
-
-    activarBoton(
-        "btnAgenda"
-    );
-
+    document.getElementById("agenda").style.display = "block";
     cargarTurnos();
 }
 
 function mostrarHistorial() {
-
     ocultarSecciones();
-
     document.getElementById("historial").style.display = "block";
-
-    activarBoton("btnHistorial");
-
-    const resultado =
-        document.getElementById("resultadoFecha");
-
-    if (resultado) {
-
-        resultado.innerHTML = `
-            <div class="card">
-
-                <h3>Historial</h3>
-
-                <p style="
-                    font-size:18px;
-                    color:#444;
-                    margin-top:10px;
-                ">
-                    Próximamente disponible
-                </p>
-
-            </div>
-        `;
-    }
 }
 
 function mostrarConfiguracion() {
-
     ocultarSecciones();
-
-    document.getElementById(
-        "configuracion"
-    ).style.display = "block";
-
-    activarBoton(
-        "btnConfiguracion"
-    );
-
+    document.getElementById("configuracion").style.display = "block";
     cargarConfiguracion();
-}
-
-function activarBoton(id) {
-
-    document
-        .querySelectorAll(
-            ".menu button"
-        )
-        .forEach(btn =>
-            btn.classList.remove(
-                "active"
-            )
-        );
-
-    document
-        .getElementById(id)
-        ?.classList.add(
-            "active"
-        );
 }
 
 /* ================= TURNOS ================= */
 
 async function guardarTurno() {
 
-    const cliente =
-        document.getElementById(
-            "cliente"
-        ).value;
+    const cliente = document.getElementById("cliente").value;
+    const fecha = document.getElementById("fecha").value;
+    const hora = document.getElementById("hora").value;
 
-    const fecha =
-        document.getElementById(
-            "fecha"
-        ).value;
-
-    const hora =
-        document.getElementById(
-            "hora"
-        ).value;
-
-    if (
-        !cliente ||
-        !fecha ||
-        !hora
-    ) {
-
-        alert(
-            "Completa todos los campos"
-        );
-
+    if (!cliente || !fecha || !hora) {
+        alert("Completa todos los campos");
         return;
     }
 
-    const { error } =
-        await supabaseClient
-            .from("turnos")
-            .insert([
-                {
-                    usuario_id:
-                        usuarioActual.id,
-                    fecha,
-                    hora,
-                    cliente_nombre:
-                        cliente,
-                    servicio_id: 1,
-                    precio:
-                        configuracionActual?.precio_servicio ||
-                        5000,
-                    estado:
-                        "reservado"
-                }
-            ]);
+    const { error } = await supabaseClient
+        .from("turnos")
+        .insert([{
+            usuario_id: usuarioActual.id,
+            fecha,
+            hora,
+            cliente_nombre: cliente,
+            precio: configuracionActual?.precio_servicio || 5000,
+            estado: "reservado"
+        }]);
 
     if (error) {
-
-        alert(
-            "Error al guardar turno"
-        );
-
+        alert("Error al guardar turno");
         return;
     }
 
-    document.getElementById(
-        "cliente"
-    ).value = "";
-
-    document.getElementById(
-        "fecha"
-    ).value = "";
-
-    document.getElementById(
-        "hora"
-    ).value = "";
-
-    document.getElementById(
-        "formTurno"
-    ).style.display =
-        "none";
+    document.getElementById("cliente").value = "";
+    document.getElementById("fecha").value = "";
+    document.getElementById("hora").value = "";
+    document.getElementById("formTurno").style.display = "none";
 
     cargarTurnos();
     cargarInicio();
 }
 
+/* ================= TURNOS LISTA ================= */
+
 async function cargarTurnos() {
 
-    const { data: turnos } =
-        await supabaseClient
-            .from("turnos")
-            .select("*")
-            .eq(
-                "usuario_id",
-                usuarioActual.id
-            )
-            .order(
-                "fecha",
-                {
-                    ascending: true
-                }
-            )
-            .order(
-                "hora",
-                {
-                    ascending: true
-                }
-            );
+    const { data: turnos } = await supabaseClient
+        .from("turnos")
+        .select("*")
+        .eq("usuario_id", usuarioActual.id)
+        .order("fecha", { ascending: true })
+        .order("hora", { ascending: true });
 
-    const lista =
-        document.getElementById(
-            "listaTurnos"
-        );
-
+    const lista = document.getElementById("listaTurnos");
     lista.innerHTML = "";
 
-    if (
-        !turnos ||
-        turnos.length === 0
-    ) {
-
-        lista.innerHTML = `
-            <div class="empty-state">
-                <span class="material-symbols-outlined">
-                    calendar_month
-                </span>
-                <h3>No hay turnos</h3>
-            </div>
-        `;
-
+    if (!turnos?.length) {
+        lista.innerHTML = "<p>No hay turnos</p>";
         return;
     }
 
     turnos.forEach(turno => {
 
-        const div =
-            document.createElement(
-                "div"
-            );
-
-        div.className =
-            `turno turno-${turno.estado}`;
+        const div = document.createElement("div");
+        div.className = `turno`;
 
         div.innerHTML = `
-           <div class="turno-hora">
-    ${turno.hora.substring(0,5)}
-</div>
-            <div class="turno-cliente">
-    ${turno.cliente_nombre}
-</div>
+            <div class="turno-hora">${turno.hora.substring(0,5)}</div>
+            <div class="turno-cliente">${turno.cliente_nombre}</div>
 
-${turno.telefono ? `
-<div style="
-    margin-bottom:10px;
-    color:#555;
-    font-weight:600;
-">
-    📱 ${turno.telefono}
-</div>
-` : ""}
-
-<span class="estado estado-${turno.estado}">
-    ${turno.estado}
-</span>
-
-<div class="acciones-turno">
-
-    ${turno.telefono ? `
-    <button onclick="abrirWhatsApp('${turno.telefono}')">
-        WhatsApp
-    </button>
-    ` : ""}
-
-                <button onclick="editarTurno(${turno.id})">
-                    Editar
-                </button>
-
-                <button onclick="completarTurno(${turno.id})">
-                    Completar
-                </button>
-
-                <button onclick="cancelarTurno(${turno.id})">
-                    Cancelar
-                </button>
-
-                <button onclick="eliminarTurno(${turno.id})">
-                    Eliminar
-                </button>
+            <div class="acciones-turno">
+                <button onclick="abrirWhatsApp('${turno.telefono || ''}')">WhatsApp</button>
             </div>
         `;
 
@@ -504,242 +302,48 @@ ${turno.telefono ? `
     });
 }
 
-/* ================= ESTADOS ================= */
-
-async function completarTurno(id) {
-
-    await supabaseClient
-        .from("turnos")
-        .update({
-            estado:
-                "completado"
-        })
-        .eq("id", id);
-
-    cargarTurnos();
-    cargarInicio();
-}
-
-async function cancelarTurno(id) {
-
-    await supabaseClient
-        .from("turnos")
-        .update({
-            estado:
-                "cancelado"
-        })
-        .eq("id", id);
-
-    cargarTurnos();
-    cargarInicio();
-}
-
-async function eliminarTurno(id) {
-
-    if (
-        !confirm(
-            "¿Eliminar turno?"
-        )
-    ) return;
-
-    await supabaseClient
-        .from("turnos")
-        .delete()
-        .eq("id", id);
-
-    cargarTurnos();
-    cargarInicio();
-}
-
-async function editarTurno(id) {
-
-    const nuevoNombre =
-        prompt(
-            "Nuevo nombre del cliente"
-        );
-
-    if (!nuevoNombre)
-        return;
-
-    await supabaseClient
-        .from("turnos")
-        .update({
-            cliente_nombre:
-                nuevoNombre
-        })
-        .eq("id", id);
-
-    cargarTurnos();
-}
+/* ================= WHATSAPP ================= */
 
 function abrirWhatsApp(telefono) {
 
-    let numero = telefono
-        .replace(/\D/g, "");
+    if (!telefono) return;
+
+    let numero = telefono.replace(/\D/g, "");
 
     if (!numero.startsWith("54")) {
-
-        numero =
-            "54" + numero;
+        numero = "54" + numero;
     }
 
-    window.open(
-        `https://wa.me/${numero}`,
-        "_blank"
-    );
+    window.open(`https://wa.me/${numero}`, "_blank");
 }
 
 /* ================= DASHBOARD ================= */
 
 async function cargarInicio() {
 
-    const hoy =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+    const hoy = new Date().toISOString().split("T")[0];
 
-    const { data: turnos } =
-        await supabaseClient
-            .from("turnos")
-            .select("*")
-            .eq(
-                "usuario_id",
-                usuarioActual.id
-            )
-            .eq(
-                "fecha",
-                hoy
-            );
+    const { data: turnos } = await supabaseClient
+        .from("turnos")
+        .select("*")
+        .eq("usuario_id", usuarioActual.id)
+        .eq("fecha", hoy);
 
     let ocupados = 0;
     let ganancias = 0;
 
     if (turnos) {
 
-        ocupados =
-            turnos.filter(
-                t =>
-                    t.estado !==
-                    "cancelado"
-            ).length;
+        ocupados = turnos.filter(t => t.estado !== "cancelado").length;
 
-        turnos.forEach(
-            turno => {
-
-                if (
-                    turno.estado !==
-                    "cancelado"
-                ) {
-
-                    ganancias +=
-                        Number(
-                            turno.precio || 0
-                        );
-                }
+        turnos.forEach(t => {
+            if (t.estado !== "cancelado") {
+                ganancias += Number(t.precio || 0);
             }
-        );
+        });
     }
 
-    const libres =
-        Math.max(
-            0,
-            20 - ocupados
-        );
-
-    document.getElementById(
-        "ocupadosHoy"
-    ).textContent =
-        ocupados;
-
-    document.getElementById(
-        "libresHoy"
-    ).textContent =
-        libres;
-
-    document.getElementById(
-        "gananciasHoy"
-    ).textContent =
-        ganancias;
-
-    cargarProximosTurnos();
-}
-
-async function cargarProximosTurnos() {
-
-    const hoy =
-        new Date()
-            .toISOString()
-            .split("T")[0];
-
-    const { data: turnos } =
-        await supabaseClient
-            .from("turnos")
-            .select("*")
-            .eq(
-                "usuario_id",
-                usuarioActual.id
-            )
-            .gte(
-                "fecha",
-                hoy
-            )
-            .neq(
-                "estado",
-                "cancelado"
-            )
-            .order(
-                "fecha",
-                {
-                    ascending: true
-                }
-            )
-            .order(
-                "hora",
-                {
-                    ascending: true
-                }
-            )
-            .limit(5);
-
-    const contenedor =
-        document.getElementById(
-            "proximosTurnos"
-        );
-
-    if (!contenedor)
-        return;
-
-    contenedor.innerHTML = "";
-
-    if (
-        !turnos ||
-        turnos.length === 0
-    ) {
-
-        contenedor.innerHTML = `
-            <div class="empty-state">
-                <span class="material-symbols-outlined">
-                    calendar_month
-                </span>
-                <h3>No hay turnos</h3>
-            </div>
-        `;
-
-        return;
-    }
-
-    turnos.forEach(turno => {
-
-        contenedor.innerHTML += `
-            <div class="proximo-item">
-                <div class="proximo-hora">
-    ${turno.hora.substring(0,5)}
-</div>
-
-                <div class="proximo-cliente">
-                    ${turno.cliente_nombre}
-                </div>
-            </div>
-        `;
-    });
+    document.getElementById("ocupadosHoy").textContent = ocupados;
+    document.getElementById("libresHoy").textContent = Math.max(0, 20 - ocupados);
+    document.getElementById("gananciasHoy").textContent = ganancias;
 }
