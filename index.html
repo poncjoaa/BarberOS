@@ -4,15 +4,12 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="google" content="notranslate">
 
     <title>BarberOS</title>
 
     <link rel="stylesheet" href="style.css">
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -99,6 +96,16 @@
 
         <h2>Historial</h2>
 
+        <!-- 🔥 BUSCADOR (IMPORTANTE PARA TU JS) -->
+        <div class="card">
+
+            <h3>Buscar por fecha</h3>
+
+            <input type="date" id="fechaBusqueda">
+            <button id="btnBuscarFecha">Buscar</button>
+
+        </div>
+
         <div id="resultadoFecha"></div>
 
     </section>
@@ -111,8 +118,7 @@
         <div class="card">
 
             <h3>Nombre de la barbería</h3>
-
-            <input type="text" id="nombreBarberia" placeholder="Nombre de la barbería">
+            <input type="text" id="nombreBarberia">
 
             <button id="btnGuardarConfig">Guardar cambios</button>
 
@@ -121,12 +127,11 @@
         <div class="card">
 
             <h3>Precio del servicio</h3>
-
-            <input type="number" id="precioServicio" placeholder="Precio">
+            <input type="number" id="precioServicio">
 
         </div>
 
-        <!-- ✅ LINK DE RESERVAS -->
+        <!-- 🔥 LINK DE RESERVAS (FUNCIONAL) -->
         <div class="card">
 
             <h3>Mi link de reservas</h3>
