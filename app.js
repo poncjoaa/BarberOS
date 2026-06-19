@@ -180,9 +180,6 @@ function mostrarHistorial() {
 
         fechaInput.min =
             usuarioActual.created_at.split("T")[0];
-
-        fechaInput.value =
-            new Date().toISOString().split("T")[0];
     }
 }
 
