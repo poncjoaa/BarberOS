@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="es" translate="no"><head><meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<meta
+    name="google"
+    content="notranslate"
+>
+
+<title>Reservar Turno</title>
+
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head><body><div class="hero">
+
+    <h1 id="nombreBarberia">
+        Cargando...
+    </h1>
+
+    <p>
+        Reservá tu turno online
+    </p>
+
+</div>
+
+<div class="card">
+
+    <h3 style="margin-bottom:12px;">
+        Fecha
+    </h3>
+
+    <input
+        type="date"
+        id="fecha"
+    >
+
+    <h3 style="margin-bottom:12px;">
+        Hora
+    </h3>
+
+    <select
+        id="hora"
+        style="
+            width:100%;
+            padding:15px;
+            border:2px solid #e5e7eb;
+            border-radius:16px;
+            margin-bottom:12px;
+            font-size:16px;
+            background:#fff;
+        "
+    >
+        <option value="">
+            Seleccionar horario
+        </option>
+    </select>
+
+    <h3 style="margin-bottom:12px;">
+        WhatsApp
+    </h3>
+
+    <input
+        type="text"
+        id="telefono"
+        placeholder="Ej: 2911234567"
+    >
+
+    <h3 style="margin-bottom:12px;">
+        Nombre
+    </h3>
+
+    <input
+        type="text"
+        id="nombre"
+        placeholder="Tu nombre"
+    >
+
+    <button
+        id="btnReservar"
+        style="
+            width:100%;
+            display:none;
+        "
+    >
+        AGENDAR TURNO
+    </button>
+
+</div>
+
+<div
+    id="mensaje"
+    class="card"
+    style="display:none;"
+></div>
+
+<script src="reservar.js"></script>
+
+</body></html>
